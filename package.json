@@ -1,0 +1,26 @@
+{
+  "name": "madadkaro",
+  "version": "1.0.0",
+  "description": "MadadKaro service marketplace application",
+  "main": "index.js",
+  "scripts": {
+    "install-backend": "cd madadkaro-backend && npm install",
+    "install-frontend": "cd madadkaro-frontend && npm install",
+    "install-all": "npm run install-backend && npm run install-frontend",
+    "dev-backend": "cd madadkaro-backend && npm run dev",
+    "dev-frontend": "cd madadkaro-frontend && npm run dev",
+    "dev": "concurrently \"npm run dev-backend\" \"npm run dev-frontend\""
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "concurrently": "^8.2.2"
+  },
+  "dependencies": {
+    "@heroicons/react": "^1.0.6",
+    "firebase": "^11.7.3",
+    "firebase-admin": "^13.4.0",
+    "prop-types": "^15.8.1"
+  }
+}

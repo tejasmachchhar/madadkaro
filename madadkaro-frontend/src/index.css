@@ -1,0 +1,89 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  body {
+    @apply bg-gray-50 text-gray-900;
+  }
+  
+  h1 {
+    @apply text-2xl font-bold md:text-3xl;
+  }
+  
+  h2 {
+    @apply text-xl font-bold md:text-2xl;
+  }
+  
+  h3 {
+    @apply text-lg font-bold md:text-xl;
+  }
+  
+  a {
+    @apply text-primary-600 hover:text-primary-800;
+  }
+  
+  button {
+    @apply rounded-md transition-colors duration-200;
+  }
+
+  .btn-primary {
+    @apply bg-primary-600 hover:bg-primary-700 text-white px-4 py-2 rounded-md;
+  }
+
+  .btn-secondary {
+    @apply bg-secondary-600 hover:bg-secondary-700 text-white px-4 py-2 rounded-md;
+  }
+
+  .btn-outline {
+    @apply border border-primary-600 text-primary-600 hover:bg-primary-50 px-4 py-2 rounded-md;
+  }
+
+  .container {
+    @apply mx-auto px-4 max-w-7xl;
+  }
+
+  .form-control {
+    @apply block w-full rounded-md border-gray-300 shadow-sm focus:border-primary-500 focus:ring-primary-500;
+  }
+
+  .card {
+    @apply bg-white rounded-lg shadow-md p-6;
+  }
+}
+
+/* Leaflet map fixes */
+.leaflet-container {
+  width: 100%;
+  height: 100%;
+}
+
+.leaflet-div-icon {
+  background: transparent;
+  border: none;
+}
+
+.leaflet-control-geosearch {
+  width: 100%;
+}
+
+.leaflet-control-geosearch .glass {
+  width: 28px;
+  height: 28px;
+  border-radius: 4px;
+}
+
+.leaflet-control-geosearch .results.active {
+  max-height: 250px;
+  overflow-y: auto;
+}
+
+.leaflet-control-geosearch form {
+  background: #fff;
+  border-radius: 4px;
+  box-shadow: 0 1px 5px rgba(0,0,0,0.65);
+}
+
+.leaflet-touch .leaflet-control-geosearch form {
+  border-radius: 4px;
+}

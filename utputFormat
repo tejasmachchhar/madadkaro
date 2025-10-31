@@ -1,0 +1,12 @@
+HTTP/1.1 200 OK
+X-Powered-By: Express
+Vary: Origin
+Access-Control-Allow-Credentials: true
+Content-Type: application/json; charset=utf-8
+Content-Length: 1852
+ETag: W/"73c-BpG9V2Wb6SBVsE5CjPvvN1wPN90"
+Date: Wed, 07 May 2025 03:34:17 GMT
+Connection: keep-alive
+Keep-Alive: timeout=5
+
+{"tasks":[{"_id":"6818e4206cd428556cf2d5f9","customer":{"_id":"68189ea52e80d1e6f7037fb4","name":"Tejas Machchhar","email":"tejasmachchhar0904@gmail.com","profilePicture":""},"title":"Trial 3","description":"T3 Edit2","category":"Plumbing","budget":1500,"location":"Bhavnagar, Bhavnagar Taluka, Bhavnagar, Gujarat, 364001, India","dateRequired":"2025-05-10T00:00:00.000Z","timeRequired":"06:45","duration":2,"images":[],"status":"open","isUrgent":false,"createdAt":"2025-05-05T16:15:28.265Z","updatedAt":"2025-05-07T03:28:12.262Z","__v":0},{"_id":"6818d6648d06d2e9258c3ec7","customer":{"_id":"68189ea52e80d1e6f7037fb4","name":"Tejas Machchhar","email":"tejasmachchhar0904@gmail.com","profilePicture":""},"title":"Test 2","description":"Test 2 Des","category":"shopping","budget":2000,"location":"Test City","dateRequired":"2025-05-06T00:00:00.000Z","timeRequired":"06:59","duration":2,"images":[],"status":"completed","isUrgent":false,"createdAt":"2025-05-05T15:16:52.267Z","updatedAt":"2025-05-07T02:40:15.529Z","__v":0,"assignedTo":{"_id":"6818a28baf7789d997daa69c","name":"Tejas Tasker1","email":"tejastasker@test.com","profilePicture":""},"completionNote":"Now?","completionRequestedAt":"2025-05-07T02:39:35.514Z","completionRequestedBy":"6818a28baf7789d997daa69c","completedAt":"2025-05-07T02:39:53.497Z","customerFeedback":"Ok","taskerFeedback":"Thank You"},{"_id":"6818ab53195b33d7608972c7","customer":{"_id":"68189ea52e80d1e6f7037fb4","name":"Tejas Machchhar","email":"tejasmachchhar0904@gmail.com","profilePicture":""},"title":"Fix sink","description":"pl","category":"other","budget":150,"location":"Bh","dateRequired":"2025-05-07T00:00:00.000Z","timeRequired":"14:00","duration":1,"images":[],"status":"open","isUrgent":true,"createdAt":"2025-05-05T12:13:07.139Z","updatedAt":"2025-05-05T12:13:07.139Z","__v":0}],"page":1,"pages":1,"count":3}
