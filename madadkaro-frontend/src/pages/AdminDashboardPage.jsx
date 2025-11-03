@@ -88,14 +88,6 @@ const AdminDashboardPage = () => {
     );
   }
 
-  if (loading) {
-    return (
-      <div className="container mx-auto px-4 py-12 text-center">
-        <p className="text-gray-600">Loading dashboard data...</p>
-      </div>
-    );
-  }
-
   return (
     <div className="container mx-auto px-4 py-8">
       <div className="flex flex-col lg:flex-row gap-8">
@@ -110,7 +102,13 @@ const AdminDashboardPage = () => {
             <h1 className="text-2xl font-bold text-gray-800">Admin Dashboard</h1>
             <p className="text-gray-600">Welcome back, {currentUser?.name}!</p>
           </div>
-              
+
+          {loading ? (
+            <div className="bg-white rounded-lg shadow-sm p-6 text-center text-gray-600">
+              Loading dashboard data...
+            </div>
+          ) : (
+            <>
               {/* Stats Overview */}
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
                 <div className="bg-white rounded-lg shadow-sm p-6">
@@ -293,6 +291,8 @@ const AdminDashboardPage = () => {
                   </div>
                 </div>
               </div>
+            </>
+          )}
         </div>
       </div>
     </div>

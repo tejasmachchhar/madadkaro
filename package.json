@@ -21,6 +21,7 @@
     "@heroicons/react": "^1.0.6",
     "firebase": "^11.7.3",
     "firebase-admin": "^13.4.0",
-    "prop-types": "^15.8.1"
+    "prop-types": "^15.8.1",
+    "vite": "^7.1.12"
   }
 }

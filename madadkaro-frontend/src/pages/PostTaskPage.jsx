@@ -5,6 +5,7 @@ import api from '../services/api';
 import { toast } from 'react-toastify';
 import CategorySelect from '../components/CategorySelect';
 import GoogleMapPicker from '../components/GoogleMapPicker';
+import { getLocationDataFromCoordinates } from '../utils/locationUtils';
 
 const PostTaskPage = () => {
   const { currentUser } = useAuth();
@@ -12,6 +13,7 @@ const PostTaskPage = () => {
   const location = useLocation(); // Added to get query params
   const [isLoading, setIsLoading] = useState(false);
   const [isLoadingAddresses, setIsLoadingAddresses] = useState(false);
+  const [isLoadingLocation, setIsLoadingLocation] = useState(false);
   const [savedAddresses, setSavedAddresses] = useState([]);
   const [selectedAddressId, setSelectedAddressId] = useState(''); // To store _id of selected address or 'new'
   const [formData, setFormData] = useState({
@@ -150,6 +152,35 @@ const PostTaskPage = () => {
     }));
   };
 
+  const handleLocationSelect = async ({ lat, lng }) => {
+    // Update coordinates first
+    setFormData(prev => ({ ...prev, latitude: lat, longitude: lng }));
+
+    // Auto-fill location data when user selects a location on the map
+    // This works for both new addresses and when user wants to update location
+    setIsLoadingLocation(true);
+    try {
+      const locationData = await getLocationDataFromCoordinates(lat, lng);
+      
+      // Auto-fill city, state, and pincode only if they're empty
+      // This allows users to override manually entered values
+      setFormData(prev => ({
+        ...prev,
+        latitude: lat,
+        longitude: lng,
+        // Only update if field is empty - allows user to override
+        city: prev.city || locationData.city,
+        state: prev.state || locationData.state,
+        pincode: prev.pincode || locationData.pincode
+      }));
+    } catch (error) {
+      console.error('Failed to get location data:', error);
+      // Don't show error to user, just silently fail
+    } finally {
+      setIsLoadingLocation(false);
+    }
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     setIsLoading(true);
@@ -266,29 +297,24 @@ const PostTaskPage = () => {
     }
   };
 
-  // Return early with loading state if needed
-  if (isLoading) {
-    return (
-      <div className="container mx-auto px-4 py-8">
-        <div className="max-w-3xl mx-auto bg-white rounded-lg shadow-md p-6 flex justify-center items-center" style={{ minHeight: "200px" }}>
-          <div className="text-center">
-            <svg className="animate-spin h-8 w-8 mx-auto mb-4 text-blue-600" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-              <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
-              <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-            </svg>
-            <p className="text-gray-600">Loading...</p>
-          </div>
-        </div>
-      </div>
-    );
-  }
   
   return (
     <div className="container mx-auto px-4 py-8">
-      <div className="max-w-3xl mx-auto bg-white rounded-lg shadow-md p-6">
+      <div className="max-w-3xl mx-auto bg-white rounded-lg shadow-md p-6 relative">
+        {isLoading && (
+          <div className="absolute inset-0 bg-white/70 backdrop-blur-sm flex items-center justify-center rounded-lg z-10">
+            <div className="text-center">
+              <svg className="animate-spin h-8 w-8 mx-auto mb-4 text-blue-600" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+              </svg>
+              <p className="text-gray-600">Posting...</p>
+            </div>
+          </div>
+        )}
         <h1 className="text-2xl font-bold text-gray-800 mb-6">Post a New Task</h1>
         
-        <form onSubmit={handleSubmit} encType="multipart/form-data">
+        <form onSubmit={handleSubmit} encType="multipart/form-data" aria-busy={isLoading}>
           <div className="space-y-6">
             <div>
               <label className="block text-gray-700 font-medium mb-2">Title*</label>
@@ -300,6 +326,7 @@ const PostTaskPage = () => {
                 className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
                 placeholder="e.g. Fix leaking kitchen faucet"
                 required
+                disabled={isLoading}
               />
             </div>
             
@@ -313,6 +340,7 @@ const PostTaskPage = () => {
                 rows="5"
                 placeholder="Describe your task in detail. Include what needs to be done, when, where, and any specific requirements."
                 required
+                disabled={isLoading}
               ></textarea>
             </div>
             
@@ -329,6 +357,7 @@ const PostTaskPage = () => {
                       value={selectedAddressId}
                       onChange={handleAddressSelectionChange}
                       className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                      disabled={isLoading}
                     >
                       <option value="">-- Select an Address --</option>
                       {savedAddresses.map(addr => (
@@ -379,6 +408,7 @@ const PostTaskPage = () => {
                           placeholder="e.g. 400001"
                           required
                           maxLength="6"
+                          disabled={isLoading}
                         />
                       </div>
 
@@ -392,6 +422,7 @@ const PostTaskPage = () => {
                           className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
                           placeholder="e.g. Mumbai"
                           required
+                          disabled={isLoading}
                         />
                       </div>
 
@@ -405,6 +436,7 @@ const PostTaskPage = () => {
                           className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
                           placeholder="e.g. Maharashtra"
                           required
+                          disabled={isLoading}
                         />
                       </div>
 
@@ -418,6 +450,7 @@ const PostTaskPage = () => {
                           className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
                           placeholder="e.g. 123, Sunshine Apartments"
                           required
+                          disabled={isLoading}
                         />
                       </div>
 
@@ -431,6 +464,7 @@ const PostTaskPage = () => {
                           className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
                           placeholder="e.g. Main Street, Juhu"
                           required
+                          disabled={isLoading}
                         />
                       </div>
 
@@ -443,14 +477,23 @@ const PostTaskPage = () => {
                           onChange={handleChange}
                           className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
                           placeholder="e.g. Near City Mall"
+                          disabled={isLoading}
                         />
                       </div>
                       <div className="md:col-span-2">
-                        <label className="block text-gray-700 font-medium mb-2">Select Exact Location (Optional)</label>
+                        <label className="block text-gray-700 font-medium mb-2">
+                          Select Exact Location (Optional)
+                          {isLoadingLocation && (
+                            <span className="ml-2 text-sm text-gray-500">Loading location data...</span>
+                          )}
+                        </label>
                         <GoogleMapPicker
-                          onLocationSelect={({ lat, lng }) => setFormData(prev => ({ ...prev, latitude: lat, longitude: lng }))}
+                          onLocationSelect={handleLocationSelect}
                           initialLocation={formData.latitude && formData.longitude ? { lat: parseFloat(formData.latitude), lng: parseFloat(formData.longitude) } : null}
                         />
+                        <p className="text-sm text-gray-500 mt-1">
+                          Click on the map or use "Find My Location" to auto-fill city, state, and pincode.
+                        </p>
                       </div>
                     </div>
                     
@@ -463,6 +506,7 @@ const PostTaskPage = () => {
                         checked={formData.saveAddress || false}
                         onChange={handleChange}
                         className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
+                        disabled={isLoading}
                       />
                       <label htmlFor="saveAddress" className="text-gray-700 font-medium">
                         Save this address for future use
@@ -479,6 +523,7 @@ const PostTaskPage = () => {
                           onChange={handleChange}
                           className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
                           placeholder="e.g. Home, Office, etc."
+                          disabled={isLoading}
                         />
                       </div>
                     )}
@@ -505,6 +550,7 @@ const PostTaskPage = () => {
                   placeholder="Your budget for this task"
                   min="1"
                   required
+                  disabled={isLoading}
                 />
               </div>
               
@@ -518,6 +564,7 @@ const PostTaskPage = () => {
                   min={new Date().toISOString().split('T')[0]}
                   className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
                   required
+                  disabled={isLoading}
                 />
               </div>
 
@@ -530,6 +577,7 @@ const PostTaskPage = () => {
                   onChange={handleChange}
                   className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
                   required
+                  disabled={isLoading}
                 />
               </div>
 
@@ -544,6 +592,7 @@ const PostTaskPage = () => {
                   placeholder="Estimated duration in hours"
                   min="1"
                   required
+                  disabled={isLoading}
                 />
               </div>
 
@@ -555,6 +604,7 @@ const PostTaskPage = () => {
                   checked={formData.isUrgent}
                   onChange={handleChange}
                   className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500"
+                  disabled={isLoading}
                 />
                 <label htmlFor="isUrgent" className="ml-2 text-gray-700">
                   This is an urgent task
@@ -571,6 +621,7 @@ const PostTaskPage = () => {
                 className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
                 multiple
                 accept="image/*"
+                disabled={isLoading}
               />
               <p className="text-sm text-gray-500 mt-1">
                 You can upload up to 5 images to help taskers understand your task better.
@@ -582,6 +633,7 @@ const PostTaskPage = () => {
                 type="button"
                 onClick={() => navigate(-1)}
                 className="bg-gray-200 text-gray-800 py-2 px-6 rounded-lg hover:bg-gray-300 transition"
+                disabled={isLoading}
               >
                 Cancel
               </button>

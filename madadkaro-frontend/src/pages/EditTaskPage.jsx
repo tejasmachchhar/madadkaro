@@ -18,7 +18,7 @@ const EditTaskPage = () => {
     category: '',
     subcategory: '',
     budget: '',
-    location: '',
+    address: '',
     dateRequired: '',
     timeRequired: '',
     duration: '',
@@ -38,12 +38,12 @@ const EditTaskPage = () => {
     if (taskDetail) {
       // Pre-fill form with existing task data
       setFormData({
-        title: taskDetail.title,
-        description: taskDetail.description,
-        category: taskDetail.category,
-        subcategory: taskDetail.subcategory,
-        budget: taskDetail.budget,
-        location: taskDetail.location,
+        title: taskDetail.title || '',
+        description: taskDetail.description || '',
+        category: taskDetail.category?._id || '',
+        subcategory: taskDetail.subcategory?._id || '',
+        budget: taskDetail.budget || '',
+        address: taskDetail.address || '',
         dateRequired: taskDetail.dateRequired ? new Date(taskDetail.dateRequired).toISOString().split('T')[0] : '',
         timeRequired: taskDetail.timeRequired || '',
         duration: taskDetail.duration || '',
@@ -141,194 +141,190 @@ const EditTaskPage = () => {
     }
   };
   
-  if (taskDetailLoading) {
-    return (
-      <div className="container mx-auto px-4 py-8">
-        <div className="text-center">
-          <p className="text-gray-600">Loading task details...</p>
-        </div>
-      </div>
-    );
-  }
-  
   return (
     <div className="container mx-auto px-4 py-8">
       <div className="max-w-3xl mx-auto bg-white rounded-lg shadow-md p-6">
         <h1 className="text-2xl font-bold text-gray-800 mb-6">Edit Task</h1>
         
-        <form onSubmit={handleSubmit} encType="multipart/form-data">
-          <div className="space-y-6">
-            <div>
-              <label className="block text-gray-700 font-medium mb-2">Title*</label>
-              <input
-                type="text"
-                name="title"
-                value={formData.title}
-                onChange={handleChange}
-                className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-                placeholder="e.g. Fix leaking kitchen faucet"
-                required
-              />
-            </div>
-            
-            <div>
-              <label className="block text-gray-700 font-medium mb-2">Description*</label>
-              <textarea
-                name="description"
-                value={formData.description}
-                onChange={handleChange}
-                className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-                rows="5"
-                placeholder="Describe your task in detail. Include what needs to be done, when, where, and any specific requirements."
-                required
-              ></textarea>
-            </div>
-            
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              <CategorySelect 
-                selectedCategory={formData.category}
-                selectedSubcategory={formData.subcategory}
-                onCategoryChange={handleCategoryChange}
-                onSubcategoryChange={handleSubcategoryChange}
-              />
-              
+        {taskDetailLoading ? (
+          <div className="text-center">
+            <p className="text-gray-600">Loading task details...</p>
+          </div>
+        ) : (
+          <form onSubmit={handleSubmit} encType="multipart/form-data">
+            <div className="space-y-6">
               <div>
-                <label className="block text-gray-700 font-medium mb-2">Budget (₹)*</label>
-                <input
-                  type="number"
-                  name="budget"
-                  value={formData.budget}
-                  onChange={handleChange}
-                  className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-                  placeholder="Enter your budget"
-                  min="1"
-                  required
-                />
-              </div>
-            </div>
-            
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              <div>
-                <label className="block text-gray-700 font-medium mb-2">Location*</label>
+                <label className="block text-gray-700 font-medium mb-2">Title*</label>
                 <input
                   type="text"
-                  name="location"
-                  value={formData.location}
+                  name="title"
+                  value={formData.title}
                   onChange={handleChange}
                   className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-                  placeholder="Enter task location"
+                  placeholder="e.g. Fix leaking kitchen faucet"
                   required
                 />
               </div>
               
               <div>
-                <label className="block text-gray-700 font-medium mb-2">Date Required</label>
-                <input
-                  type="date"
-                  name="dateRequired"
-                  value={formData.dateRequired}
+                <label className="block text-gray-700 font-medium mb-2">Description*</label>
+                <textarea
+                  name="description"
+                  value={formData.description}
                   onChange={handleChange}
                   className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-                  min={new Date().toISOString().split('T')[0]}
-                />
-              </div>
-            </div>
-            
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              <div>
-                <label className="block text-gray-700 font-medium mb-2">Time Required</label>
-                <input
-                  type="time"
-                  name="timeRequired"
-                  value={formData.timeRequired}
-                  onChange={handleChange}
-                  className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-                />
+                  rows="5"
+                  placeholder="Describe your task in detail. Include what needs to be done, when, where, and any specific requirements."
+                  required
+                ></textarea>
               </div>
               
-              <div>
-                <label className="block text-gray-700 font-medium mb-2">Duration (in hours)*</label>
-                <input
-                  type="number"
-                  name="duration"
-                  value={formData.duration}
-                  onChange={handleChange}
-                  className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-                  placeholder="Estimated duration in hours"
-                  min="1"
-                  required
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <CategorySelect 
+                  selectedCategory={formData.category}
+                  selectedSubcategory={formData.subcategory}
+                  onCategoryChange={handleCategoryChange}
+                  onSubcategoryChange={handleSubcategoryChange}
                 />
-              </div>
-            </div>
-            
-            <div>
-              <label className="block text-gray-700 font-medium mb-2">Images</label>
-              <div className="space-y-4">
-                {/* Existing Images */}
-                {existingImages.length > 0 && (
-                  <div>
-                    <p className="text-sm text-gray-600 mb-2">Current Images:</p>
-                    <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
-                      {existingImages.map((image, index) => (
-                        <div key={index} className="relative group">
-                          <img
-                            src={image}
-                            alt={`Task image ${index + 1}`}
-                            className="w-full h-32 object-cover rounded-lg"
-                          />
-                          <button
-                            type="button"
-                            onClick={() => removeImage(index, true)}
-                            className="absolute top-2 right-2 bg-red-500 text-white p-1 rounded-full opacity-0 group-hover:opacity-100 transition-opacity"
-                          >
-                            <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" viewBox="0 0 20 20" fill="currentColor">
-                              <path fillRule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clipRule="evenodd" />
-                            </svg>
-                          </button>
-                        </div>
-                      ))}
-                    </div>
-                  </div>
-                )}
-                
-                {/* New Images */}
-                {selectedImages.length > 0 && (
-                  <div>
-                    <p className="text-sm text-gray-600 mb-2">New Images:</p>
-                    <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
-                      {selectedImages.map((image, index) => (
-                        <div key={index} className="relative group">
-                          <img
-                            src={URL.createObjectURL(image)}
-                            alt={`New image ${index + 1}`}
-                            className="w-full h-32 object-cover rounded-lg"
-                          />
-                          <button
-                            type="button"
-                            onClick={() => removeImage(index)}
-                            className="absolute top-2 right-2 bg-red-500 text-white p-1 rounded-full opacity-0 group-hover:opacity-100 transition-opacity"
-                          >
-                            <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" viewBox="0 0 20 20" fill="currentColor">
-                              <path fillRule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clipRule="evenodd" />
-                            </svg>
-                          </button>
-                        </div>
-                      ))}
-                    </div>
-                  </div>
-                )}
                 
                 <div>
+                  <label className="block text-gray-700 font-medium mb-2">Budget (₹)*</label>
                   <input
-                    type="file"
-                    accept="image/*"
-                    multiple
-                    onChange={handleImageChange}
+                    type="number"
+                    name="budget"
+                    value={formData.budget}
+                    onChange={handleChange}
+                    className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    placeholder="Enter your budget"
+                    min="1"
+                    required
+                  />
+                </div>
+              </div>
+              
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div>
+                  <label className="block text-gray-700 font-medium mb-2">Location*</label>
+                  <input
+                    type="text"
+                    name="address"
+                    value={formData.address}
+                    onChange={handleChange}
+                    className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    placeholder="Enter task location"
+                    required
+                  />
+                </div>
+                
+                <div>
+                  <label className="block text-gray-700 font-medium mb-2">Date Required</label>
+                  <input
+                    type="date"
+                    name="dateRequired"
+                    value={formData.dateRequired}
+                    onChange={handleChange}
+                    className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    min={new Date().toISOString().split('T')[0]}
+                  />
+                </div>
+              </div>
+              
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div>
+                  <label className="block text-gray-700 font-medium mb-2">Time Required</label>
+                  <input
+                    type="time"
+                    name="timeRequired"
+                    value={formData.timeRequired}
+                    onChange={handleChange}
                     className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
                   />
-                  <p className="text-sm text-gray-500 mt-1">
-                    You can select multiple images. Maximum file size: 5MB per image.
-                  </p>
+                </div>
+                
+                <div>
+                  <label className="block text-gray-700 font-medium mb-2">Duration (in hours)*</label>
+                  <input
+                    type="number"
+                    name="duration"
+                    value={formData.duration}
+                    onChange={handleChange}
+                    className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    placeholder="Estimated duration in hours"
+                    min="1"
+                    required
+                  />
+                </div>
+              </div>
+              
+              <div>
+                <label className="block text-gray-700 font-medium mb-2">Images</label>
+                <div className="space-y-4">
+                  {/* Existing Images */}
+                  {existingImages.length > 0 && (
+                    <div>
+                      <p className="text-sm text-gray-600 mb-2">Current Images:</p>
+                      <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
+                        {existingImages.map((image, index) => (
+                          <div key={index} className="relative group">
+                            <img
+                              src={image}
+                              alt={`Task image ${index + 1}`}
+                              className="w-full h-32 object-cover rounded-lg"
+                            />
+                            <button
+                              type="button"
+                              onClick={() => removeImage(index, true)}
+                              className="absolute top-2 right-2 bg-red-500 text-white p-1 rounded-full opacity-0 group-hover:opacity-100 transition-opacity"
+                            >
+                              <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" viewBox="0 0 20 20" fill="currentColor">
+                                <path fillRule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clipRule="evenodd" />
+                              </svg>
+                            </button>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+                  
+                  {/* New Images */}
+                  {selectedImages.length > 0 && (
+                    <div>
+                      <p className="text-sm text-gray-600 mb-2">New Images:</p>
+                      <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
+                        {selectedImages.map((image, index) => (
+                          <div key={index} className="relative group">
+                            <img
+                              src={URL.createObjectURL(image)}
+                              alt={`New image ${index + 1}`}
+                              className="w-full h-32 object-cover rounded-lg"
+                            />
+                            <button
+                              type="button"
+                              onClick={() => removeImage(index)}
+                              className="absolute top-2 right-2 bg-red-500 text-white p-1 rounded-full opacity-0 group-hover:opacity-100 transition-opacity"
+                            >
+                              <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" viewBox="0 0 20 20" fill="currentColor">
+                                <path fillRule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clipRule="evenodd" />
+                              </svg>
+                            </button>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+                  
+                  <div>
+                    <input
+                      type="file"
+                      accept="image/*"
+                      multiple
+                      onChange={handleImageChange}
+                      className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    />
+                    <p className="text-sm text-gray-500 mt-1">
+                      You can select multiple images. Maximum file size: 5MB per image.
+                    </p>
+                  </div>
                 </div>
               </div>
             </div>
@@ -364,8 +360,8 @@ const EditTaskPage = () => {
                 {isLoading ? 'Saving...' : 'Save Changes'}
               </button>
             </div>
-          </div>
-        </form>
+          </form>
+        )}
       </div>
     </div>
   );

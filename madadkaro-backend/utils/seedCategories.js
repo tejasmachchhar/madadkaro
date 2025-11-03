@@ -269,46 +269,66 @@ const categories = [
   }
 ];
 
-// Import function
+// Utility to slugify names consistently
+const slugify = (text) =>
+  text
+    .toString()
+    .toLowerCase()
+    .trim()
+    .replace(/&/g, '-and-')
+    .replace(/[^a-z0-9]+/g, '-')
+    .replace(/^-+|-+$/g, '');
+
+// Import (seed) function with idempotent upserts
 const importCategories = async () => {
   try {
-    // Update existing categories with price ranges
     for (const category of categories) {
-      const { name, priceRange, subcategories } = category;
-      
-      // Find and update main category
-      const existingCat = await Category.findOneAndUpdate(
-        { name },
-        { priceRange },
-        { new: true }
+      const { name, description, icon, priceRange, subcategories } = category;
+
+      // Upsert main category
+      const mainSlug = slugify(name);
+      const mainCategory = await Category.findOneAndUpdate(
+        { slug: mainSlug },
+        {
+          name,
+          slug: mainSlug,
+          description: description || '',
+          icon: icon || '',
+          priceRange: priceRange || { min: 0, max: 0 },
+          parentCategory: null,
+          isActive: true
+        },
+        { new: true, upsert: true, setDefaultsOnInsert: true }
       );
-      
-      if (existingCat) {
-        console.log(`Updated price range for category: ${name}`);
-      } else {
-        console.log(`Category not found: ${name}`);
-      }
-      
-      // Update subcategories
-      if (subcategories && subcategories.length > 0) {
+
+      console.log(`Seeded category: ${mainCategory.name}`);
+
+      // Upsert subcategories
+      if (Array.isArray(subcategories)) {
         for (const sub of subcategories) {
-          const existingSub = await Category.findOneAndUpdate(
-            { name: sub.name },
-            { priceRange: sub.priceRange },
-            { new: true }
+          const subName = sub.name;
+          const subSlug = slugify(subName);
+          const subDoc = await Category.findOneAndUpdate(
+            { slug: subSlug },
+            {
+              name: subName,
+              slug: subSlug,
+              description: sub.description || '',
+              icon: sub.icon || '',
+              priceRange: sub.priceRange || { min: 0, max: 0 },
+              parentCategory: mainCategory._id,
+              isActive: true
+            },
+            { new: true, upsert: true, setDefaultsOnInsert: true }
           );
-          
-          if (existingSub) {
-            console.log(`Updated price range for subcategory: ${sub.name}`);
-          } else {
-            console.log(`Subcategory not found: ${sub.name}`);
-          }
+
+          console.log(`  ↳ Seeded subcategory: ${subDoc.name}`);
         }
       }
     }
-    
-    console.log('Price Range Update Success');
-    process.exit();
+
+    console.log('Categories seeding completed successfully');
+    process.exit(0);
   } catch (error) {
     console.error(`Error: ${error.message}`);
     process.exit(1);

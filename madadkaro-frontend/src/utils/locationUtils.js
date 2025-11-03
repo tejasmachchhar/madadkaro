@@ -251,6 +251,103 @@ export const getAddressFromCoordinates = async (lat, lng) => {
 };
 
 /**
+ * Get structured location data (city, state, pincode) from coordinates
+ * @param {number} lat - Latitude
+ * @param {number} lng - Longitude
+ * @returns {Promise<{city: string, state: string, pincode: string}>} - Location data object
+ */
+export const getLocationDataFromCoordinates = async (lat, lng) => {
+  if (!lat || !lng || isNaN(lat) || isNaN(lng)) {
+    console.warn('Invalid coordinates provided to getLocationDataFromCoordinates');
+    return { city: '', state: '', pincode: '' };
+  }
+
+  // Check cache first (use a different cache key for structured data)
+  const cacheKey = `locationData_${lat},${lng}`;
+  if (geocodingCache.has(cacheKey)) {
+    return geocodingCache.get(cacheKey);
+  }
+
+  // Try BigDataCloud API first (more reliable and returns structured data)
+  try {
+    const url = `https://api.bigdatacloud.net/data/reverse-geocode-client?latitude=${lat}&longitude=${lng}&localityLanguage=en`;
+    
+    const response = await fetchWithTimeout(url, { timeout: 5000 });
+    const data = await response.json();
+    
+    if (data) {
+      const locationData = {
+        city: data.city || data.locality || data.principalSubdivision || '',
+        state: data.principalSubdivision || data.administrativeArea || '',
+        pincode: data.postcode || data.postalCode || ''
+      };
+
+      // Cache the result
+      geocodingCache.set(cacheKey, locationData);
+      return locationData;
+    }
+  } catch (error) {
+    console.warn('API call to BigDataCloud failed:', error.message);
+    // Continue to OpenStreetMap
+  }
+
+  // Fallback to OpenStreetMap API
+  try {
+    const url = `https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lng}&zoom=18&addressdetails=1`;
+    
+    const response = await fetchWithTimeout(url, { 
+      timeout: 5000,
+      headers: {
+        'Accept-Language': 'en-US,en;q=0.9',
+        'Referer': window.location.origin || 'https://madadkaro.com'
+      }
+    });
+    
+    const data = await response.json();
+    
+    if (data && data.address) {
+      const address = data.address;
+      const locationData = {
+        city: address.city || address.town || address.village || address.county || address.state_district || '',
+        state: address.state || address.region || '',
+        pincode: address.postcode || address.postal_code || ''
+      };
+
+      // Cache the result
+      geocodingCache.set(cacheKey, locationData);
+      return locationData;
+    }
+  } catch (error) {
+    console.warn('API call to OpenStreetMap failed:', error.message);
+  }
+
+  // Try to extract from nearest common location
+  const nearestCommonLocation = findNearestCommonLocation(lat, lng);
+  if (nearestCommonLocation) {
+    // Parse the address string to extract city and state
+    const parts = nearestCommonLocation.split(', ');
+    let city = '';
+    let state = '';
+    
+    if (parts.length >= 2) {
+      city = parts[0];
+      state = parts[1];
+    } else if (parts.length === 1) {
+      city = parts[0];
+    }
+
+    const locationData = { city, state, pincode: '' };
+    geocodingCache.set(cacheKey, locationData);
+    return locationData;
+  }
+
+  // Final fallback - return empty strings
+  const locationData = { city: '', state: '', pincode: '' };
+  geocodingCache.set(cacheKey, locationData);
+  return locationData;
+};
+
+/**
  * Get coordinates from address using OpenStreetMap Nominatim API
  * @param {string} address - Address to geocode
  * @returns {Promise<{lat: number, lng: number} | null>} - Coordinates object or null if not found

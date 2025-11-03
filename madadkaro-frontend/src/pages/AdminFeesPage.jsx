@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import { useAuth } from '../hooks/useAuth';
+import { Link } from 'react-router-dom';
+import { useAuth } from '../context/AuthContext';
 import AdminNavigation from '../components/AdminNavigation';
 import api from '../services/api';
 import { toast } from 'react-toastify';
@@ -52,58 +53,43 @@ const AdminFeesPage = () => {
     }));
   };
 
-  if (!isAdmin) {
+  if (!isAdmin()) {
     return (
-      <div className="min-h-screen bg-gray-100 py-6 flex flex-col justify-center sm:py-12">
-        <div className="relative py-3 sm:max-w-xl sm:mx-auto">
-          <div className="relative px-4 py-10 bg-white shadow-lg sm:rounded-3xl sm:p-20">
-            <div className="max-w-md mx-auto">
-              <div className="divide-y divide-gray-200">
-                <div className="py-8 text-base leading-6 space-y-4 text-gray-700 sm:text-lg sm:leading-7">
-                  <p>You do not have permission to access this page.</p>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    );
-  }
-
-  if (isLoading) {
-    return (
-      <div className="min-h-screen bg-gray-100 p-6">
-        <div className="max-w-4xl mx-auto">
-          <AdminNavigation />
-          <div className="mt-8 bg-white rounded-lg shadow p-6">
-            <p>Loading...</p>
-          </div>
-        </div>
+      <div className="container mx-auto px-4 py-12 text-center">
+        <h1 className="text-2xl font-bold text-gray-800 mb-4">Unauthorized Access</h1>
+        <p className="text-gray-600 mb-6">You don't have permission to access this page.</p>
+        <Link to="/" className="bg-blue-600 text-white py-2 px-6 rounded-lg hover:bg-blue-700 transition">
+          Back to Home
+        </Link>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-gray-100 py-4 sm:py-6 lg:py-8">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="lg:flex lg:gap-8">
-          <div className="w-full lg:w-64 mb-6 lg:mb-0">
-            <AdminNavigation />
-          </div>
-          
-          <div className="flex-1">
-            <div className="bg-white rounded-lg shadow overflow-hidden">
-              <div className="px-4 py-5 sm:px-6 sm:py-6 border-b border-gray-200">
-                <h1 className="text-xl sm:text-2xl font-bold text-gray-900">Platform Fees Management</h1>
-                <p className="mt-1 sm:mt-2 text-sm text-gray-600">Configure platform fees and charges</p>
-              </div>
+    <div className="container mx-auto px-4 py-8">
+      <div className="flex flex-col lg:flex-row gap-8">
+        {/* Sidebar */}
+        <div className="lg:w-1/5">
+          <AdminNavigation />
+        </div>
 
-              <form onSubmit={handleSubmit} className="px-4 py-5 sm:p-6 space-y-6 sm:space-y-8">
+        {/* Main Content */}
+        <div className="lg:w-4/5">
+          <div className="mb-6">
+            <h1 className="text-2xl font-bold text-gray-800">Platform Fees Management</h1>
+            <p className="text-gray-600">Configure platform fees and charges</p>
+          </div>
+
+          {isLoading ? (
+            <div className="bg-white rounded-lg shadow-sm p-6 text-center text-gray-600">Loading...</div>
+          ) : (
+            <div className="bg-white rounded-lg shadow-sm p-6">
+              <form onSubmit={handleSubmit} className="space-y-6">
                 <div>
                   <label className="block text-sm font-medium text-gray-700">
                     Platform Fee Percentage
                   </label>
-                  <div className="mt-1 sm:mt-2 relative rounded-md shadow-sm">
+                  <div className="mt-2 relative rounded-md shadow-sm">
                     <input
                       type="number"
                       name="platformFeePercentage"
@@ -119,7 +105,7 @@ const AdminFeesPage = () => {
                       <span className="text-gray-500 sm:text-sm">%</span>
                     </div>
                   </div>
-                  <p className="mt-1 sm:mt-2 text-sm text-gray-500">
+                  <p className="mt-2 text-sm text-gray-500">
                     Percentage fee charged to customers on task budget
                   </p>
                 </div>
@@ -128,7 +114,7 @@ const AdminFeesPage = () => {
                   <label className="block text-sm font-medium text-gray-700">
                     Trust & Support Fee
                   </label>
-                  <div className="mt-1 sm:mt-2 relative rounded-md shadow-sm">
+                  <div className="mt-2 relative rounded-md shadow-sm">
                     <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
                       <span className="text-gray-500 sm:text-sm">₹</span>
                     </div>
@@ -143,7 +129,7 @@ const AdminFeesPage = () => {
                       required
                     />
                   </div>
-                  <p className="mt-1 sm:mt-2 text-sm text-gray-500">
+                  <p className="mt-2 text-sm text-gray-500">
                     Fixed fee charged for platform trust and support services
                   </p>
                 </div>
@@ -152,7 +138,7 @@ const AdminFeesPage = () => {
                   <label className="block text-sm font-medium text-gray-700">
                     Commission Percentage
                   </label>
-                  <div className="mt-1 sm:mt-2 relative rounded-md shadow-sm">
+                  <div className="mt-2 relative rounded-md shadow-sm">
                     <input
                       type="number"
                       name="commissionPercentage"
@@ -168,23 +154,23 @@ const AdminFeesPage = () => {
                       <span className="text-gray-500 sm:text-sm">%</span>
                     </div>
                   </div>
-                  <p className="mt-1 sm:mt-2 text-sm text-gray-500">
+                  <p className="mt-2 text-sm text-gray-500">
                     Commission percentage charged to taskers
                   </p>
                 </div>
 
-                <div className="pt-4 sm:pt-5">
+                <div className="pt-2">
                   <button
                     type="submit"
                     disabled={isSaving}
-                    className="w-full flex justify-center py-2 sm:py-3 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-primary-600 hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500 disabled:bg-gray-400 disabled:cursor-not-allowed transition-colors duration-200"
+                    className="w-full flex justify-center py-3 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-primary-600 hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500 disabled:bg-gray-400 disabled:cursor-not-allowed transition-colors duration-200"
                   >
                     {isSaving ? 'Saving...' : 'Save Changes'}
                   </button>
                 </div>
               </form>
             </div>
-          </div>
+          )}
         </div>
       </div>
     </div>

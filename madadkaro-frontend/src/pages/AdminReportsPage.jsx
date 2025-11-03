@@ -382,159 +382,200 @@ const AdminReportsPage = () => {
             </div>
           </div>
           
-          {/* Report Content */}
-          {loading ? (
-            <div className="bg-white rounded-lg shadow-sm p-6 text-center">
-              <p className="text-gray-600">Loading report data...</p>
-            </div>
-          ) : (
-            <>
-              {/* User Reports */}
-              {activeTab === 'users' && userReport && (
-                <div className="space-y-6">
+          {/* Report Content with inline loading overlay */}
+          <div className="relative">
+            {loading && (
+              <div className="absolute inset-0 bg-white/60 backdrop-blur-[1px] z-10 flex items-center justify-center rounded-lg">
+                <div className="text-center text-gray-600">Loading report data...</div>
+              </div>
+            )}
+            
+            {/* Fallback: if no data yet for the selected tab, show stable-height loaders */}
+            {activeTab === 'users' && !userReport && (
+              <div className="space-y-6">
+                <div className="bg-white rounded-lg shadow-sm p-6">
+                  <div className="h-80 animate-pulse bg-gray-100 rounded" />
+                </div>
+                <div className="bg-white rounded-lg shadow-sm p-6">
+                  <div className="h-80 animate-pulse bg-gray-100 rounded" />
+                </div>
+              </div>
+            )}
+            {activeTab === 'tasks' && !taskReport && (
+              <div className="space-y-6">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                   <div className="bg-white rounded-lg shadow-sm p-6">
-                    <h2 className="text-lg font-medium text-gray-800 mb-4">User Registration Trend</h2>
-                    <div className="h-80">
-                      <Line 
-                        data={getUserTrendChartData()} 
-                        options={chartOptions} 
-                      />
-                    </div>
+                    <div className="h-80 animate-pulse bg-gray-100 rounded" />
                   </div>
-                  
                   <div className="bg-white rounded-lg shadow-sm p-6">
-                    <h2 className="text-lg font-medium text-gray-800 mb-4">User Distribution by Role</h2>
+                    <div className="h-80 animate-pulse bg-gray-100 rounded" />
+                  </div>
+                </div>
+                <div className="bg-white rounded-lg shadow-sm p-6">
+                  <div className="h-80 animate-pulse bg-gray-100 rounded" />
+                </div>
+              </div>
+            )}
+            {activeTab === 'earnings' && !earningReport && (
+              <div className="space-y-6">
+                <div className="bg-white rounded-lg shadow-sm p-6">
+                  <div className="h-80 animate-pulse bg-gray-100 rounded" />
+                </div>
+                <div className="bg-white rounded-lg shadow-sm p-6">
+                  <div className="h-80 animate-pulse bg-gray-100 rounded" />
+                </div>
+                <div className="bg-white rounded-lg shadow-sm p-6">
+                  <div className="h-48 animate-pulse bg-gray-100 rounded" />
+                </div>
+              </div>
+            )}
+
+            {/* Actual Reports */}
+            {/* User Reports */}
+            {activeTab === 'users' && userReport && (
+              <div className="space-y-6">
+                <div className="bg-white rounded-lg shadow-sm p-6">
+                  <h2 className="text-lg font-medium text-gray-800 mb-4">User Registration Trend</h2>
+                  <div className="h-80">
+                    <Line 
+                      data={getUserTrendChartData()} 
+                      options={chartOptions} 
+                    />
+                  </div>
+                </div>
+                
+                <div className="bg-white rounded-lg shadow-sm p-6">
+                  <h2 className="text-lg font-medium text-gray-800 mb-4">User Distribution by Role</h2>
+                  <div className="h-80">
+                    <Pie 
+                      data={getUserDistributionChartData()} 
+                      options={pieChartOptions} 
+                    />
+                  </div>
+                </div>
+              </div>
+            )}
+            
+            {/* Task Reports */}
+            {activeTab === 'tasks' && taskReport && (
+              <div className="space-y-6">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  <div className="bg-white rounded-lg shadow-sm p-6">
+                    <h2 className="text-lg font-medium text-gray-800 mb-4">Tasks by Status</h2>
                     <div className="h-80">
                       <Pie 
-                        data={getUserDistributionChartData()} 
+                        data={getTaskStatusChartData()} 
                         options={pieChartOptions} 
                       />
                     </div>
                   </div>
-                </div>
-              )}
-              
-              {/* Task Reports */}
-              {activeTab === 'tasks' && taskReport && (
-                <div className="space-y-6">
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                    <div className="bg-white rounded-lg shadow-sm p-6">
-                      <h2 className="text-lg font-medium text-gray-800 mb-4">Tasks by Status</h2>
-                      <div className="h-80">
-                        <Pie 
-                          data={getTaskStatusChartData()} 
-                          options={pieChartOptions} 
-                        />
-                      </div>
-                    </div>
-                    
-                    <div className="bg-white rounded-lg shadow-sm p-6">
-                      <h2 className="text-lg font-medium text-gray-800 mb-4">Tasks by Category</h2>
-                      <div className="h-80">
-                        <Bar 
-                          data={getTaskCategoryChartData()} 
-                          options={chartOptions} 
-                        />
-                      </div>
-                    </div>
-                  </div>
                   
                   <div className="bg-white rounded-lg shadow-sm p-6">
-                    <h2 className="text-lg font-medium text-gray-800 mb-4">Task Creation Trend</h2>
-                    <div className="h-80">
-                      <Line 
-                        data={{
-                          labels: taskReport.tasksByDate.map(item => {
-                            const date = new Date(item._id);
-                            return date.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
-                          }),
-                          datasets: [
-                            {
-                              label: 'New Tasks',
-                              data: taskReport.tasksByDate.map(item => item.count),
-                              fill: true,
-                              backgroundColor: 'rgba(75, 192, 192, 0.2)',
-                              borderColor: 'rgba(75, 192, 192, 1)',
-                              tension: 0.4
-                            }
-                          ]
-                        }} 
-                        options={chartOptions} 
-                      />
-                    </div>
-                  </div>
-                </div>
-              )}
-              
-              {/* Earnings Reports */}
-              {activeTab === 'earnings' && earningReport && (
-                <div className="space-y-6">
-                  <div className="bg-white rounded-lg shadow-sm p-6">
-                    <h2 className="text-lg font-medium text-gray-800 mb-4">Platform Earnings Trend</h2>
-                    <div className="h-80">
-                      <Line 
-                        data={getEarningsByDateChartData()} 
-                        options={chartOptions} 
-                      />
-                    </div>
-                  </div>
-                  
-                  <div className="bg-white rounded-lg shadow-sm p-6">
-                    <h2 className="text-lg font-medium text-gray-800 mb-4">Earnings by Category</h2>
+                    <h2 className="text-lg font-medium text-gray-800 mb-4">Tasks by Category</h2>
                     <div className="h-80">
                       <Bar 
-                        data={getEarningsByCategoryChartData()} 
+                        data={getTaskCategoryChartData()} 
                         options={chartOptions} 
                       />
                     </div>
                   </div>
-                  
-                  {earningReport.earningsByCategory && earningReport.earningsByCategory.length > 0 && (
-                    <div className="bg-white rounded-lg shadow-sm p-6">
-                      <h2 className="text-lg font-medium text-gray-800 mb-4">Earnings by Category Details</h2>
-                      <div className="overflow-x-auto">
-                        <table className="min-w-full divide-y divide-gray-200">
-                          <thead className="bg-gray-50">
-                            <tr>
-                              <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                Category
-                              </th>
-                              <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                Earnings
-                              </th>
-                              <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                Percentage
-                              </th>
-                            </tr>
-                          </thead>
-                          <tbody className="bg-white divide-y divide-gray-200">
-                            {earningReport.earningsByCategory.map((category, index) => {
-                              const totalEarnings = earningReport.earningsByCategory.reduce((sum, cat) => sum + cat.earnings, 0);
-                              const percentage = Math.round((category.earnings / totalEarnings) * 100);
-                              
-                              return (
-                                <tr key={index}>
-                                  <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
-                                    {category._id}
-                                  </td>
-                                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                                    {formatCurrency(category.earnings)}
-                                  </td>
-                                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                                    {percentage}%
-                                  </td>
-                                </tr>
-                              );
-                            })}
-                          </tbody>
-                        </table>
-                      </div>
-                    </div>
-                  )}
                 </div>
-              )}
-            </>
-          )}
+                
+                <div className="bg-white rounded-lg shadow-sm p-6">
+                  <h2 className="text-lg font-medium text-gray-800 mb-4">Task Creation Trend</h2>
+                  <div className="h-80">
+                    <Line 
+                      data={{
+                        labels: taskReport.tasksByDate.map(item => {
+                          const date = new Date(item._id);
+                          return date.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+                        }),
+                        datasets: [
+                          {
+                            label: 'New Tasks',
+                            data: taskReport.tasksByDate.map(item => item.count),
+                            fill: true,
+                            backgroundColor: 'rgba(75, 192, 192, 0.2)',
+                            borderColor: 'rgba(75, 192, 192, 1)',
+                            tension: 0.4
+                          }
+                        ]
+                      }} 
+                      options={chartOptions} 
+                    />
+                  </div>
+                </div>
+              </div>
+            )}
+            
+            {/* Earnings Reports */}
+            {activeTab === 'earnings' && earningReport && (
+              <div className="space-y-6">
+                <div className="bg-white rounded-lg shadow-sm p-6">
+                  <h2 className="text-lg font-medium text-gray-800 mb-4">Platform Earnings Trend</h2>
+                  <div className="h-80">
+                    <Line 
+                      data={getEarningsByDateChartData()} 
+                      options={chartOptions} 
+                    />
+                  </div>
+                </div>
+                
+                <div className="bg-white rounded-lg shadow-sm p-6">
+                  <h2 className="text-lg font-medium text-gray-800 mb-4">Earnings by Category</h2>
+                  <div className="h-80">
+                    <Bar 
+                      data={getEarningsByCategoryChartData()} 
+                      options={chartOptions} 
+                    />
+                  </div>
+                </div>
+                
+                {earningReport.earningsByCategory && earningReport.earningsByCategory.length > 0 && (
+                  <div className="bg-white rounded-lg shadow-sm p-6">
+                    <h2 className="text-lg font-medium text-gray-800 mb-4">Earnings by Category Details</h2>
+                    <div className="overflow-x-auto">
+                      <table className="min-w-full divide-y divide-gray-200">
+                        <thead className="bg-gray-50">
+                          <tr>
+                            <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                              Category
+                            </th>
+                            <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                              Earnings
+                            </th>
+                            <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                              Percentage
+                            </th>
+                          </tr>
+                        </thead>
+                        <tbody className="bg-white divide-y divide-gray-200">
+                          {earningReport.earningsByCategory.map((category, index) => {
+                            const totalEarnings = earningReport.earningsByCategory.reduce((sum, cat) => sum + cat.earnings, 0);
+                            const percentage = Math.round((category.earnings / totalEarnings) * 100);
+                            
+                            return (
+                              <tr key={index}>
+                                <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
+                                  {category._id}
+                                </td>
+                                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                                  {formatCurrency(category.earnings)}
+                                </td>
+                                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                                  {percentage}%
+                                </td>
+                              </tr>
+                            );
+                          })}
+                        </tbody>
+                      </table>
+                    </div>
+                  </div>
+                )}
+              </div>
+            )}
+          </div>
         </div>
       </div>
     </div>
