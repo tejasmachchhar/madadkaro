@@ -1,4 +1,4 @@
-import { middleOfUSA } from "./constants";
+import { middleOfIndia } from "./constants";
 
 export interface LocationResponse {
   status: string;
@@ -26,5 +26,5 @@ export async function getLocation() {
     }
   // eslint-disable-next-line no-empty
   } catch {}
-  return middleOfUSA;
+  return middleOfIndia;
 }

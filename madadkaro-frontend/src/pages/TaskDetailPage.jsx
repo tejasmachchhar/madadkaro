@@ -7,6 +7,7 @@ import { toast } from 'react-toastify';
 import ChatInterface from '../components/ChatInterface';
 import TaskCompletion from '../components/TaskCompletion';
 import api from '../services/api';
+import realtimeService from '../services/realtimeService';
 
 const TaskDetailPage = () => {
   const { taskId } = useParams();
@@ -155,10 +156,23 @@ const TaskDetailPage = () => {
         fetchTaskDetails();
       }
     };
+    
+    // Set up real-time listener for task updates
+    const unsubscribeTaskUpdates = realtimeService.subscribeToTaskUpdates(taskId, (data) => {
+      fetchTaskDetails();
+    });
+    
+    // Set up real-time listener for bid updates on this task
+    const unsubscribeBidUpdates = realtimeService.subscribeToBidUpdates(taskId, (data) => {
+      // Refresh task details to get updated bid list
+      fetchTaskDetails();
+    });
 
     return () => {
       controller.abort();
       window.refreshTaskDetails = null;
+      unsubscribeTaskUpdates();
+      unsubscribeBidUpdates();
     };
   }, [taskId, getTaskDetail]);
   
@@ -571,18 +585,18 @@ const TaskDetailPage = () => {
                         />
                       </div>
                       
-                      <div className="flex justify-end space-x-3 pt-4">
+                      <div className="flex flex-col sm:flex-row gap-3 sm:justify-end pt-4">
                         <button
                           type="button"
                           onClick={() => setShowBidForm(false)}
-                          className="bg-gray-200 text-gray-800 py-2 px-6 rounded hover:bg-gray-300 transition"
+                          className="bg-gray-200 text-gray-800 py-2 px-6 rounded hover:bg-gray-300 transition order-2 sm:order-1"
                           disabled={submittingBid}
                         >
                           Cancel
                         </button>
                         <button
                           type="submit"
-                          className="bg-blue-600 text-white py-2 px-6 rounded hover:bg-blue-700 transition"
+                          className="bg-blue-600 text-white py-2 px-6 rounded hover:bg-blue-700 transition order-1 sm:order-2"
                           disabled={submittingBid}
                         >
                           {submittingBid ? 'Submitting...' : (userBid ? 'Update Bid' : 'Submit Bid')}
@@ -592,16 +606,56 @@ const TaskDetailPage = () => {
                   </form>
                 ) : userBid ? (
                   <div>
-                    <div className="bg-blue-50 border border-blue-200 rounded-lg p-4 mb-4">
-                      <p className="text-blue-800 font-medium">You have already placed a bid on this task.</p>
-                      <div className="mt-2">
-                        <p className="text-sm text-gray-600">Your bid amount: <span className="font-medium text-gray-900">₹{userBid.amount}</span></p>
-                        <p className="text-sm text-gray-600 mt-1">Status: <span className="font-medium capitalize">{userBid.status}</span></p>
-                        {userBid.estimatedDays && (
-                          <p className="text-sm text-gray-600 mt-1">Estimated days: <span className="font-medium text-gray-900">{userBid.estimatedDays}</span></p>
-                        )}
+                    {userBid.status === 'rejected' ? (
+                      <div className="bg-red-50 border-2 border-red-200 rounded-lg p-4 mb-4">
+                        <div className="flex items-start gap-3">
+                          <div className="text-2xl">⚠️</div>
+                          <div className="flex-1">
+                            <p className="text-red-800 font-semibold text-lg mb-2">Your bid has been rejected</p>
+                            <div className="mt-2 space-y-2">
+                              <p className="text-sm text-gray-700">Your bid amount: <span className="font-medium text-gray-900">₹{userBid.amount}</span></p>
+                              <p className="text-sm text-gray-700">Status: <span className="font-medium text-red-700 capitalize">{userBid.status}</span></p>
+                              {userBid.estimatedDays && (
+                                <p className="text-sm text-gray-700 mt-1">Estimated days: <span className="font-medium text-gray-900">{userBid.estimatedDays}</span></p>
+                              )}
+                              {userBid.rejectionReason && (
+                                <div className="mt-3 p-3 bg-red-100 border border-red-300 rounded-md">
+                                  <p className="text-sm font-medium text-red-900 mb-1">Rejection Reason:</p>
+                                  <p className="text-sm text-red-800">{userBid.rejectionReason}</p>
+                                </div>
+                              )}
+                              {!userBid.rejectionReason && (
+                                <div className="mt-3 p-3 bg-gray-100 border border-gray-300 rounded-md">
+                                  <p className="text-sm text-gray-600 italic">No rejection reason provided by the customer.</p>
+                                </div>
+                              )}
+                            </div>
+                          </div>
+                        </div>
                       </div>
-                    </div>
+                    ) : userBid.status === 'accepted' ? (
+                      <div className="bg-green-50 border-2 border-green-200 rounded-lg p-4 mb-4">
+                        <p className="text-green-800 font-semibold text-lg mb-2">🎉 Congratulations! Your bid has been accepted</p>
+                        <div className="mt-2">
+                          <p className="text-sm text-gray-700">Your bid amount: <span className="font-medium text-gray-900">₹{userBid.amount}</span></p>
+                          <p className="text-sm text-gray-700 mt-1">Status: <span className="font-medium text-green-700 capitalize">{userBid.status}</span></p>
+                          {userBid.estimatedDays && (
+                            <p className="text-sm text-gray-700 mt-1">Estimated days: <span className="font-medium text-gray-900">{userBid.estimatedDays}</span></p>
+                          )}
+                        </div>
+                      </div>
+                    ) : (
+                      <div className="bg-blue-50 border border-blue-200 rounded-lg p-4 mb-4">
+                        <p className="text-blue-800 font-medium">You have already placed a bid on this task.</p>
+                        <div className="mt-2">
+                          <p className="text-sm text-gray-600">Your bid amount: <span className="font-medium text-gray-900">₹{userBid.amount}</span></p>
+                          <p className="text-sm text-gray-600 mt-1">Status: <span className="font-medium capitalize">{userBid.status}</span></p>
+                          {userBid.estimatedDays && (
+                            <p className="text-sm text-gray-600 mt-1">Estimated days: <span className="font-medium text-gray-900">{userBid.estimatedDays}</span></p>
+                          )}
+                        </div>
+                      </div>
+                    )}
                     
                     <div>
                       <h3 className="text-sm font-medium text-gray-500 mb-2">Your Message</h3>
@@ -626,6 +680,20 @@ const TaskDetailPage = () => {
                         >
                           Edit Bid
                         </button>
+                      </div>
+                    )}
+
+                    {userBid.status === 'rejected' && task?.status === 'open' && (
+                      <div className="mt-4 p-4 bg-gray-50 border border-gray-200 rounded-lg">
+                        <p className="text-sm text-gray-700 mb-3">
+                          Your bid has been rejected. You can still find other tasks to bid on.
+                        </p>
+                        <Link
+                          to="/tasks"
+                          className="inline-block bg-blue-600 text-white py-2 px-4 rounded hover:bg-blue-700 transition text-sm"
+                        >
+                          Browse Other Tasks
+                        </Link>
                       </div>
                     )}
                   </div>
@@ -708,26 +776,26 @@ const TaskDetailPage = () => {
                       </div>
                       
                       {canSeeBids && isTaskOwner && task?.status === 'open' && bid.status === 'pending' && (
-                        <div className="mt-4 flex justify-end space-x-3">
+                        <div className="mt-4 flex flex-col sm:flex-row gap-2 sm:justify-end">
                           <button
                             onClick={() => {
                               const reason = prompt('Please provide a reason for rejecting this bid (optional):');
                               handleRejectBid(bid._id, reason || '');
                             }}
-                            className="bg-red-100 text-red-600 py-1 px-4 rounded hover:bg-red-200 transition text-sm"
+                            className="bg-red-100 text-red-600 py-1 px-4 rounded hover:bg-red-200 transition text-sm order-2 sm:order-1"
                           >
                             Reject
                           </button>
                           <button
                             onClick={() => handleAcceptBid(bid._id)}
-                            className="bg-green-100 text-green-600 py-1 px-4 rounded hover:bg-green-200 transition text-sm"
+                            className="bg-green-100 text-green-600 py-1 px-4 rounded hover:bg-green-200 transition text-sm order-1 sm:order-2"
                           >
                             Accept Bid
                           </button>
                         </div>
                       )}
                       
-                      {canSeeBids && bid.status !== 'pending' && (
+                      {bid.status !== 'pending' && (
                         <div className="mt-3">
                           <span className={`inline-block px-2 py-1 rounded-full text-xs font-medium ${
                             bid.status === 'accepted' ? 'bg-green-100 text-green-800' :
@@ -737,10 +805,36 @@ const TaskDetailPage = () => {
                             {bid.status.charAt(0).toUpperCase() + bid.status.slice(1)}
                           </span>
                           
-                          {bid.status === 'rejected' && bid.rejectionReason && (
-                            <p className="text-sm text-gray-600 mt-2">
-                              Reason: {bid.rejectionReason}
-                            </p>
+                          {/* Show rejection info - with special emphasis for taskers viewing their own rejected bid */}
+                          {bid.status === 'rejected' && (
+                            <div className={`mt-3 p-3 rounded-md ${
+                              isTasker && bid.tasker._id === currentUser._id 
+                                ? 'bg-red-50 border-2 border-red-200' 
+                                : 'bg-red-50 border border-red-200'
+                            }`}>
+                              <div className="flex items-start gap-2">
+                                {isTasker && bid.tasker._id === currentUser._id && (
+                                  <span className="text-lg">⚠️</span>
+                                )}
+                                <div className="flex-1">
+                                  {isTasker && bid.tasker._id === currentUser._id && (
+                                    <p className="text-sm font-semibold text-red-900 mb-2">Your bid has been rejected</p>
+                                  )}
+                                  {bid.rejectionReason ? (
+                                    <>
+                                      <p className={`${isTasker && bid.tasker._id === currentUser._id ? 'text-xs' : 'text-sm'} font-medium text-red-900 mb-1`}>
+                                        Rejection Reason:
+                                      </p>
+                                      <p className={`${isTasker && bid.tasker._id === currentUser._id ? 'text-sm' : 'text-sm'} text-red-800`}>
+                                        {bid.rejectionReason}
+                                      </p>
+                                    </>
+                                  ) : (
+                                    <p className="text-sm text-gray-600 italic">No rejection reason provided by the customer.</p>
+                                  )}
+                                </div>
+                              </div>
+                            </div>
                           )}
                         </div>
                       )}

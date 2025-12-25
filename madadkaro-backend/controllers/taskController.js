@@ -504,8 +504,9 @@ const updateTaskStatus = asyncHandler(async (req, res) => {
     const io = req.app.get('io');
     const userSockets = req.app.get('userSockets');
     
-    if (io && userSockets && userSockets[task.customer._id]) {
-      userSockets[task.customer._id].forEach(socketId => {
+    if (io && userSockets && userSockets.has(task.customer._id.toString())) {
+      const socketId = userSockets.get(task.customer._id.toString());
+      if (socketId) {
         io.to(socketId).emit('notification', {
           type: 'task_started',
           message: `${req.user.name} has started working on task "${task.title}".`,
@@ -515,7 +516,7 @@ const updateTaskStatus = asyncHandler(async (req, res) => {
             taskerName: req.user.name,
           },
         });
-      });
+      }
     }
   }
 
@@ -636,8 +637,9 @@ const requestTaskCompletion = asyncHandler(async (req, res) => {
   const io = req.app.get('io');
   const userSockets = req.app.get('userSockets');
   
-  if (io && userSockets && userSockets[task.customer._id]) {
-    userSockets[task.customer._id].forEach(socketId => {
+  if (io && userSockets && userSockets.has(task.customer._id.toString())) {
+    const socketId = userSockets.get(task.customer._id.toString());
+    if (socketId) {
       io.to(socketId).emit('notification', {
         type: 'completion_requested',
         message: `${req.user.name} has requested to mark task "${task.title}" as completed.`,
@@ -647,7 +649,7 @@ const requestTaskCompletion = asyncHandler(async (req, res) => {
           taskerName: req.user.name,
         },
       });
-    });
+    }
   }
 
   res.json(updatedTask);

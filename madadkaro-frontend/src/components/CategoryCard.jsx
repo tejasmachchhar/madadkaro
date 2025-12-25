@@ -40,11 +40,11 @@ const CategoryCard = ({ category, locationData, isPopular = false, userRole = 't
   return (
     <Link 
       to={generateUrl()}
-      className={`bg-white rounded-lg shadow-md hover:shadow-lg transition-all duration-300 transform hover:-translate-y-1 overflow-hidden
+      className={`relative bg-white rounded-lg shadow-md hover:shadow-lg transition-all duration-300 transform hover:-translate-y-1 overflow-hidden
         ${isPopular ? 'ring-2 ring-secondary-500' : ''}`}
     >
       {isPopular && (
-        <div className="bg-secondary-500 text-white text-xs font-bold px-3 py-1 absolute right-0 top-0">
+        <div className="bg-secondary-500 text-white text-xs font-bold px-3 py-1 absolute right-0 top-0 rounded-bl-lg">
           POPULAR
         </div>
       )}

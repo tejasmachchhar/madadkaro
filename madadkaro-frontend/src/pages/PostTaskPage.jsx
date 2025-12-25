@@ -5,7 +5,7 @@ import api from '../services/api';
 import { toast } from 'react-toastify';
 import CategorySelect from '../components/CategorySelect';
 import GoogleMapPicker from '../components/GoogleMapPicker';
-import { getLocationDataFromCoordinates } from '../utils/locationUtils';
+import { getLocationDataFromCoordinates, getCurrentPosition } from '../utils/locationUtils';
 
 const PostTaskPage = () => {
   const { currentUser } = useAuth();
@@ -16,6 +16,15 @@ const PostTaskPage = () => {
   const [isLoadingLocation, setIsLoadingLocation] = useState(false);
   const [savedAddresses, setSavedAddresses] = useState([]);
   const [selectedAddressId, setSelectedAddressId] = useState(''); // To store _id of selected address or 'new'
+  const [useLocationBasedAddress, setUseLocationBasedAddress] = useState(true); // Toggle for location-based vs custom address (default: true for auto-fill)
+  const [customAddressFields, setCustomAddressFields] = useState({ // Store custom address fields separately
+    pincode: '',
+    houseNoBuilding: '',
+    areaColony: '',
+    landmark: '',
+    city: '',
+    state: ''
+  });
   const [formData, setFormData] = useState({
     title: '',
     description: '',
@@ -37,6 +46,11 @@ const PostTaskPage = () => {
     latitude: '',
     longitude: ''
   });
+
+  // Scroll to top when page loads
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, []);
 
   // Effect to pre-fill category from URL query parameter
   useEffect(() => {
@@ -71,18 +85,35 @@ const PostTaskPage = () => {
               city: defaultAddress.city,
               state: defaultAddress.state,
             }));
+            // Also set custom address fields
+            setCustomAddressFields({
+              pincode: defaultAddress.pincode,
+              houseNoBuilding: defaultAddress.houseNoBuilding,
+              areaColony: defaultAddress.areaColony,
+              landmark: defaultAddress.landmark || '',
+              city: defaultAddress.city,
+              state: defaultAddress.state
+            });
+            // When a saved address is selected, use custom mode
+            setUseLocationBasedAddress(false);
           } else if (response.data?.length > 0 && !selectedAddressId) {
             // If no default, but addresses exist, prompt to select or add new
             setSelectedAddressId(''); // Explicitly set to empty to show 'Select...' or 'Add new'
+            // Ensure location-based mode is enabled for new addresses
+            setUseLocationBasedAddress(true);
           } else {
             // No addresses, or forcing new entry
             setSelectedAddressId('new');
+            // Ensure location-based mode is enabled for new addresses
+            setUseLocationBasedAddress(true);
           }
         } catch (error) {
           console.error('Failed to fetch addresses:', error);
           // toast.error('Could not load saved addresses.'); // Optional: notify user
           setSavedAddresses([]);
           setSelectedAddressId('new'); // Default to new address if fetch fails
+          // Ensure location-based mode is enabled for new addresses
+          setUseLocationBasedAddress(true);
         } finally {
           setIsLoadingAddresses(false);
         }
@@ -90,6 +121,54 @@ const PostTaskPage = () => {
     };
     fetchAddresses();
   }, [currentUser]);
+
+  // Auto-fill location when page loads if in location-based mode and no saved address is selected
+  useEffect(() => {
+    const autoFillLocation = async () => {
+      // Only auto-fill if:
+      // 1. Location-based mode is enabled
+      // 2. No saved address is selected (new address or empty)
+      // 3. Coordinates are not already set
+      // 4. User is logged in (addresses are loaded)
+      if (
+        useLocationBasedAddress &&
+        (selectedAddressId === 'new' || selectedAddressId === '') &&
+        !formData.latitude &&
+        !formData.longitude &&
+        currentUser &&
+        !isLoadingAddresses
+      ) {
+        setIsLoadingLocation(true);
+        try {
+          const position = await getCurrentPosition();
+          const { lat, lng } = position;
+          
+          // Update coordinates and get location data
+          const locationData = await getLocationDataFromCoordinates(lat, lng);
+          setFormData(prev => ({
+            ...prev,
+            latitude: lat.toString(),
+            longitude: lng.toString(),
+            city: locationData.city || prev.city,
+            state: locationData.state || prev.state,
+            pincode: locationData.pincode || prev.pincode
+          }));
+        } catch (error) {
+          console.error('Failed to get current location automatically:', error);
+          // Silently fail - user can still click on map or use "Find My Location" button
+        } finally {
+          setIsLoadingLocation(false);
+        }
+      }
+    };
+
+    // Small delay to ensure addresses are loaded first
+    const timer = setTimeout(() => {
+      autoFillLocation();
+    }, 500);
+
+    return () => clearTimeout(timer);
+  }, [useLocationBasedAddress, selectedAddressId, currentUser, isLoadingAddresses, formData.latitude, formData.longitude]);
 
   const handleAddressSelectionChange = (e) => {
     const addressId = e.target.value;
@@ -106,6 +185,18 @@ const PostTaskPage = () => {
         city: '',
         state: '',
       }));
+      // Also clear custom address fields
+      setCustomAddressFields({
+        pincode: '',
+        houseNoBuilding: '',
+        areaColony: '',
+        landmark: '',
+        city: '',
+        state: ''
+      });
+      // Explicitly set to location-based mode when selecting new address
+      // This allows auto-fill to work when user adds a new address
+      setUseLocationBasedAddress(true);
     } else {
       const selected = savedAddresses.find(addr => addr._id === addressId);
       if (selected) {
@@ -118,6 +209,17 @@ const PostTaskPage = () => {
           city: selected.city,
           state: selected.state,
         }));
+        // Save to custom fields as well
+        setCustomAddressFields({
+          pincode: selected.pincode,
+          houseNoBuilding: selected.houseNoBuilding,
+          areaColony: selected.areaColony,
+          landmark: selected.landmark || '',
+          city: selected.city,
+          state: selected.state
+        });
+        // Reset to custom mode when selecting a saved address
+        setUseLocationBasedAddress(false);
       }
     }
   };
@@ -128,6 +230,14 @@ const PostTaskPage = () => {
       ...prev,
       [name]: type === 'checkbox' ? checked : value
     }));
+    
+    // If in custom mode and user is editing address fields, update custom fields storage
+    if (!useLocationBasedAddress && ['pincode', 'houseNoBuilding', 'areaColony', 'landmark', 'city', 'state'].includes(name)) {
+      setCustomAddressFields(prev => ({
+        ...prev,
+        [name]: type === 'checkbox' ? checked : value
+      }));
+    }
   };
 
   const handleCategoryChange = (categoryId) => {
@@ -157,27 +267,77 @@ const PostTaskPage = () => {
     setFormData(prev => ({ ...prev, latitude: lat, longitude: lng }));
 
     // Auto-fill location data when user selects a location on the map
-    // This works for both new addresses and when user wants to update location
-    setIsLoadingLocation(true);
-    try {
-      const locationData = await getLocationDataFromCoordinates(lat, lng);
+    // Only auto-fill if location-based mode is enabled
+    if (useLocationBasedAddress) {
+      setIsLoadingLocation(true);
+      try {
+        const locationData = await getLocationDataFromCoordinates(lat, lng);
+        
+        // Auto-fill all address fields from location data when in location-based mode
+        setFormData(prev => ({
+          ...prev,
+          latitude: lat,
+          longitude: lng,
+          city: locationData.city || prev.city,
+          state: locationData.state || prev.state,
+          pincode: locationData.pincode || prev.pincode
+          // Note: houseNoBuilding, areaColony, and landmark cannot be determined from coordinates
+          // These remain as user-entered values
+        }));
+      } catch (error) {
+        console.error('Failed to get location data:', error);
+        // Don't show error to user, just silently fail
+      } finally {
+        setIsLoadingLocation(false);
+      }
+    }
+  };
+
+  // Handle toggle between location-based and custom address
+  const handleAddressModeChange = (useLocation) => {
+    setUseLocationBasedAddress(useLocation);
+    
+    if (useLocation) {
+      // Switching to location-based mode: save current custom fields and clear them
+      setCustomAddressFields({
+        pincode: formData.pincode,
+        houseNoBuilding: formData.houseNoBuilding,
+        areaColony: formData.areaColony,
+        landmark: formData.landmark,
+        city: formData.city,
+        state: formData.state
+      });
       
-      // Auto-fill city, state, and pincode only if they're empty
-      // This allows users to override manually entered values
+      // If we have coordinates, fetch and fill location data
+      if (formData.latitude && formData.longitude) {
+        setIsLoadingLocation(true);
+        getLocationDataFromCoordinates(parseFloat(formData.latitude), parseFloat(formData.longitude))
+          .then(locationData => {
+            setFormData(prev => ({
+              ...prev,
+              city: locationData.city || prev.city,
+              state: locationData.state || prev.state,
+              pincode: locationData.pincode || prev.pincode
+            }));
+          })
+          .catch(error => {
+            console.error('Failed to get location data:', error);
+          })
+          .finally(() => {
+            setIsLoadingLocation(false);
+          });
+      }
+    } else {
+      // Switching to custom mode: restore previously saved custom fields
       setFormData(prev => ({
         ...prev,
-        latitude: lat,
-        longitude: lng,
-        // Only update if field is empty - allows user to override
-        city: prev.city || locationData.city,
-        state: prev.state || locationData.state,
-        pincode: prev.pincode || locationData.pincode
+        pincode: customAddressFields.pincode || prev.pincode,
+        houseNoBuilding: customAddressFields.houseNoBuilding || prev.houseNoBuilding,
+        areaColony: customAddressFields.areaColony || prev.areaColony,
+        landmark: customAddressFields.landmark || prev.landmark,
+        city: customAddressFields.city || prev.city,
+        state: customAddressFields.state || prev.state
       }));
-    } catch (error) {
-      console.error('Failed to get location data:', error);
-      // Don't show error to user, just silently fail
-    } finally {
-      setIsLoadingLocation(false);
     }
   };
 
@@ -396,6 +556,40 @@ const PostTaskPage = () => {
                 {/* Show address form if 'new' is selected or no saved addresses */} 
                 {(selectedAddressId === 'new' || (savedAddresses.length === 0 && !isLoadingAddresses)) && (
                   <div className="space-y-4">
+                    {/* Address Mode Toggle */}
+                    <div className="mb-4 p-4 bg-gray-50 border rounded-lg">
+                      <label className="block text-gray-700 font-medium mb-3">Address Input Mode</label>
+                      <div className="flex gap-4">
+                        <label className="flex items-center cursor-pointer">
+                          <input
+                            type="radio"
+                            name="addressMode"
+                            checked={!useLocationBasedAddress}
+                            onChange={() => handleAddressModeChange(false)}
+                            className="mr-2 h-4 w-4 text-blue-600 focus:ring-blue-500"
+                            disabled={isLoading}
+                          />
+                          <span className="text-gray-700">Custom Address (Manual Entry)</span>
+                        </label>
+                        <label className="flex items-center cursor-pointer">
+                          <input
+                            type="radio"
+                            name="addressMode"
+                            checked={useLocationBasedAddress}
+                            onChange={() => handleAddressModeChange(true)}
+                            className="mr-2 h-4 w-4 text-blue-600 focus:ring-blue-500"
+                            disabled={isLoading}
+                          />
+                          <span className="text-gray-700">Location-Based (Auto-fill from Map)</span>
+                        </label>
+                      </div>
+                      <p className="text-sm text-gray-500 mt-2">
+                        {useLocationBasedAddress 
+                          ? "Address fields will be auto-filled when you click on the map. You can still edit them manually."
+                          : "Enter address fields manually. Your entries will be saved when switching modes."}
+                      </p>
+                    </div>
+                    
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                       <div>
                         <label className="block text-gray-700 font-medium mb-2">Pincode*</label>
@@ -492,7 +686,9 @@ const PostTaskPage = () => {
                           initialLocation={formData.latitude && formData.longitude ? { lat: parseFloat(formData.latitude), lng: parseFloat(formData.longitude) } : null}
                         />
                         <p className="text-sm text-gray-500 mt-1">
-                          Click on the map or use "Find My Location" to auto-fill city, state, and pincode.
+                          {useLocationBasedAddress 
+                            ? "Click on the map or use 'Find My Location' to auto-fill city, state, and pincode from the selected location."
+                            : "Click on the map to set coordinates. Address fields won't be auto-filled in custom mode."}
                         </p>
                       </div>
                     </div>
@@ -628,18 +824,18 @@ const PostTaskPage = () => {
               </p>
             </div>
             
-            <div className="flex justify-end space-x-4 mt-8">
+            <div className="flex flex-col sm:flex-row gap-3 sm:justify-end mt-8">
               <button
                 type="button"
                 onClick={() => navigate(-1)}
-                className="bg-gray-200 text-gray-800 py-2 px-6 rounded-lg hover:bg-gray-300 transition"
+                className="bg-gray-200 text-gray-800 py-2 px-6 rounded-lg hover:bg-gray-300 transition order-2 sm:order-1"
                 disabled={isLoading}
               >
                 Cancel
               </button>
               <button
                 type="submit"
-                className="bg-blue-600 text-white py-2 px-6 rounded-lg hover:bg-blue-700 transition"
+                className="bg-blue-600 text-white py-2 px-6 rounded-lg hover:bg-blue-700 transition order-1 sm:order-2"
                 disabled={isLoading}
               >
                 {isLoading ? (

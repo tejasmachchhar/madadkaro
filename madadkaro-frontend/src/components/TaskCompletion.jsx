@@ -229,18 +229,18 @@ const TaskCompletion = ({ task, onTaskUpdate }) => {
                   required
                 ></textarea>
               </div>
-              <div className="flex justify-end space-x-3">
+              <div className="flex flex-col sm:flex-row gap-3 sm:justify-end">
                 <button
                   type="button"
                   onClick={() => setShowCompletionForm(false)}
-                  className="bg-gray-300 text-gray-800 py-2 px-4 rounded hover:bg-gray-400 transition"
+                  className="bg-gray-300 text-gray-800 py-2 px-4 rounded hover:bg-gray-400 transition order-2 sm:order-1"
                   disabled={isSubmitting}
                 >
                   Cancel
                 </button>
                 <button
                   type="submit"
-                  className="bg-green-600 text-white py-2 px-4 rounded hover:bg-green-700 transition"
+                  className="bg-green-600 text-white py-2 px-4 rounded hover:bg-green-700 transition order-1 sm:order-2"
                   disabled={isSubmitting}
                 >
                   {isSubmitting ? 'Submitting...' : 'Submit Request'}
@@ -340,18 +340,18 @@ const TaskCompletion = ({ task, onTaskUpdate }) => {
                   className="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
                 ></textarea>
               </div>
-              <div className="flex justify-end space-x-3">
+              <div className="flex flex-col sm:flex-row gap-3 sm:justify-end">
                 <button
                   type="button"
                   onClick={() => setShowConfirmationForm(false)}
-                  className="bg-gray-300 text-gray-800 py-2 px-4 rounded hover:bg-gray-400 transition"
+                  className="bg-gray-300 text-gray-800 py-2 px-4 rounded hover:bg-gray-400 transition order-2 sm:order-1"
                   disabled={isSubmitting}
                 >
                   Cancel
                 </button>
                 <button
                   type="submit"
-                  className="bg-green-600 text-white py-2 px-4 rounded hover:bg-green-700 transition"
+                  className="bg-green-600 text-white py-2 px-4 rounded hover:bg-green-700 transition order-1 sm:order-2"
                   disabled={isSubmitting}
                 >
                   {isSubmitting ? 'Confirming...' : 'Confirm Completion'}
@@ -376,18 +376,18 @@ const TaskCompletion = ({ task, onTaskUpdate }) => {
                   required
                 ></textarea>
               </div>
-              <div className="flex justify-end space-x-3">
+              <div className="flex flex-col sm:flex-row gap-3 sm:justify-end">
                 <button
                   type="button"
                   onClick={() => setShowRejectionForm(false)}
-                  className="bg-gray-300 text-gray-800 py-2 px-4 rounded hover:bg-gray-400 transition"
+                  className="bg-gray-300 text-gray-800 py-2 px-4 rounded hover:bg-gray-400 transition order-2 sm:order-1"
                   disabled={isSubmitting}
                 >
                   Cancel
                 </button>
                 <button
                   type="submit"
-                  className="bg-red-600 text-white py-2 px-4 rounded hover:bg-red-700 transition"
+                  className="bg-red-600 text-white py-2 px-4 rounded hover:bg-red-700 transition order-1 sm:order-2"
                   disabled={isSubmitting}
                 >
                   {isSubmitting ? 'Rejecting...' : 'Reject Completion'}
@@ -480,18 +480,18 @@ const TaskCompletion = ({ task, onTaskUpdate }) => {
                   required
                 ></textarea>
               </div>
-              <div className="flex justify-end space-x-3">
+              <div className="flex flex-col sm:flex-row gap-3 sm:justify-end">
                 <button
                   type="button"
                   onClick={() => setShowFeedbackForm(false)}
-                  className="bg-gray-300 text-gray-800 py-2 px-4 rounded hover:bg-gray-400 transition"
+                  className="bg-gray-300 text-gray-800 py-2 px-4 rounded hover:bg-gray-400 transition order-2 sm:order-1"
                   disabled={isSubmitting}
                 >
                   Cancel
                 </button>
                 <button
                   type="submit"
-                  className="bg-blue-600 text-white py-2 px-4 rounded hover:bg-blue-700 transition"
+                  className="bg-blue-600 text-white py-2 px-4 rounded hover:bg-blue-700 transition order-1 sm:order-2"
                   disabled={isSubmitting}
                 >
                   {isSubmitting ? 'Submitting...' : 'Submit Feedback'}

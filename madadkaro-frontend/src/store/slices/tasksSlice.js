@@ -207,6 +207,35 @@ const tasksSlice = createSlice({
       state.availableTasks.error = null;
       state.taskDetail.error = null;
     },
+    // Real-time update reducers
+    updateTaskDetailFromSocket: (state, action) => {
+      const updatedTask = action.payload;
+      if (state.taskDetail.data && state.taskDetail.data._id === updatedTask._id) {
+        state.taskDetail.data = updatedTask;
+      }
+    },
+    updateTaskInList: (state, action) => {
+      const updatedTask = action.payload;
+      
+      // Update in customer tasks if exists
+      state.customerTasks.data = state.customerTasks.data.map(task => 
+        task._id === updatedTask._id ? updatedTask : task
+      );
+      
+      // Update in available tasks if exists
+      state.availableTasks.data = state.availableTasks.data.map(task => 
+        task._id === updatedTask._id ? updatedTask : task
+      );
+      
+      // Update task detail if it's the same task
+      if (state.taskDetail.data && state.taskDetail.data._id === updatedTask._id) {
+        state.taskDetail.data = updatedTask;
+      }
+    },
+    refreshTaskDetail: (state, action) => {
+      // Mark task detail as needing refresh
+      state.taskDetail.data = action.payload;
+    },
   },
   extraReducers: (builder) => {
     builder
@@ -375,7 +404,7 @@ const tasksSlice = createSlice({
 });
 
 // Export actions and reducer
-export const { resetTaskDetail, resetTaskErrors } = tasksSlice.actions;
+export const { resetTaskDetail, resetTaskErrors, updateTaskDetailFromSocket, updateTaskInList, refreshTaskDetail } = tasksSlice.actions;
 
 // Selectors
 export const selectCustomerTasks = (state) => state.tasks.customerTasks.data;

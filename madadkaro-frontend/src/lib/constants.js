@@ -1,1 +1,1 @@
-export const middleOfUSA = [-100, 40];
+export const middleOfIndia = [77.2090, 28.6139];

@@ -493,19 +493,19 @@ const CategoryManager = () => {
                 </span>
               )}
             </p>
-            <div className="flex justify-end space-x-4">
+            <div className="flex flex-col sm:flex-row gap-3 sm:justify-end">
               <button
                 onClick={() => {
                   setShowDeleteModal(false);
                   setCategoryToDelete(null);
                 }}
-                className="px-4 py-2 border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50"
+                className="px-4 py-2 border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50 order-2 sm:order-1"
               >
                 Cancel
               </button>
               <button
                 onClick={handleDeleteCategory}
-                className="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700"
+                className="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 order-1 sm:order-2"
               >
                 Delete
               </button>

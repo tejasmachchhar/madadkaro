@@ -1,5 +1,6 @@
-import { useState, useCallback } from 'react';
+import { useState, useCallback, useEffect } from 'react';
 import api from '../services/api';
+import realtimeService from '../services/realtimeService';
 
 export const useReviews = () => {
   const [taskerReviews, setTaskerReviews] = useState([]);
@@ -87,6 +88,26 @@ export const useReviews = () => {
       throw error;
     }
   }, []);
+  
+  // Set up real-time listeners for review updates
+  useEffect(() => {
+    const unsubscribers = [];
+    
+    // Listen for new reviews
+    const unsubNewReview = realtimeService.subscribe('review_added', (data) => {
+      if (data.taskerId) {
+        // Refetch the reviews for this tasker
+        getMyReceivedReviews();
+      }
+      // Also refetch my review stats if applicable
+      getMyReviewStats();
+    });
+    unsubscribers.push(unsubNewReview);
+    
+    return () => {
+      unsubscribers.forEach(unsub => unsub());
+    };
+  }, [getMyReceivedReviews, getMyReviewStats]);
 
   return {
     taskerReviews,

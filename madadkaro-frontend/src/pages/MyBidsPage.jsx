@@ -1,15 +1,48 @@
 import { useState, useEffect } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { useAuth } from '../hooks/useAuth';
 import { useBids } from '../hooks/useBids';
 import { toast } from 'react-toastify';
 import TaskCompletionButton from '../components/TaskCompletionButton';
+import realtimeService from '../services/realtimeService';
 
 const MyBidsPage = () => {
   const navigate = useNavigate();
+  const location = useLocation();
   const { currentUser, isTasker } = useAuth();
   const { getMyBids, myBids, myBidsLoading } = useBids();
-  const [activeTab, setActiveTab] = useState('active');
+  
+  // Get initial tab from URL params, localStorage, or default based on source
+  const getInitialTab = () => {
+    // Check if coming from home page via URL param or location state
+    const urlParams = new URLSearchParams(location.search);
+    const fromHome = urlParams.get('from') === 'home' || location.state?.fromHome;
+    
+    if (fromHome) {
+      return 'all'; // Default to "All Bids" when coming from home page
+    }
+    
+    // Otherwise, use the last remembered tab or default to 'active'
+    const lastTab = localStorage.getItem('myBidsLastTab');
+    return lastTab || 'active';
+  };
+  
+  const [activeTab, setActiveTab] = useState(getInitialTab);
+  
+  // Save tab to localStorage whenever it changes
+  useEffect(() => {
+    localStorage.setItem('myBidsLastTab', activeTab);
+  }, [activeTab]);
+
+  // Update tab when location changes (e.g., when coming from home page)
+  useEffect(() => {
+    const urlParams = new URLSearchParams(location.search);
+    const fromHome = urlParams.get('from') === 'home' || location.state?.fromHome;
+    
+    if (fromHome && activeTab !== 'all') {
+      setActiveTab('all');
+    }
+  }, [location.search, location.state]);
 
   useEffect(() => {
     if (!currentUser) {
@@ -24,21 +57,54 @@ const MyBidsPage = () => {
     
     fetchBids();
   }, [activeTab, currentUser, isTasker, navigate]);
+  
+  // Set up real-time listeners for bid updates
+  useEffect(() => {
+    const unsubscribers = [];
+    
+    // Listen for bid status changes
+    const unsubBidStatus = realtimeService.subscribe('bid_status_changed', (data) => {
+      // Refetch bids when a bid status changes
+      fetchBids();
+    });
+    unsubscribers.push(unsubBidStatus);
+    
+    // Listen for bid updates
+    const unsubBidUpdate = realtimeService.subscribe('bid_updated', (data) => {
+      // Refetch bids when a bid is updated
+      fetchBids();
+    });
+    unsubscribers.push(unsubBidUpdate);
+    
+    // Listen for task status changes (which might affect bid status)
+    const unsubTaskStatus = realtimeService.subscribeToUserTasks((data) => {
+      // Refetch bids when task status changes
+      fetchBids();
+    });
+    unsubscribers.push(unsubTaskStatus);
+    
+    return () => {
+      unsubscribers.forEach(unsub => unsub());
+    };
+  }, [activeTab]);
 
   const fetchBids = async () => {
     try {
-        if (activeTab === 'active') {
+      if (activeTab === 'active') {
         // For active tab, only show pending bids and accepted bids with non-completed tasks
         getMyBids({ 
           status: 'pending,accepted',
           taskStatus: '!completed' // Only non-completed tasks
         });
-      } else {
+      } else if (activeTab === 'completed') {
         // For completed & others tab, show all non-active bids (rejected/cancelled) and completed tasks
         getMyBids({ 
           status: 'rejected,cancelled,accepted',
           taskStatus: '!assigned' // Don't filter by task status for rejected/cancelled bids
         });
+      } else if (activeTab === 'all') {
+        // For all bids tab, fetch all bids without status filter
+        getMyBids({ limit: 100 }); // Fetch a large number to get all bids
       }
     } catch (error) {
       console.error('Error fetching bids:', error);
@@ -95,6 +161,16 @@ const MyBidsPage = () => {
           <div className="flex space-x-8">
             <button
               className={`py-3 px-1 font-medium ${
+                activeTab === 'all'
+                  ? 'text-blue-600 border-b-2 border-blue-600'
+                  : 'text-gray-600 hover:text-gray-800'
+              }`}
+              onClick={() => setActiveTab('all')}
+            >
+              All Bids
+            </button>
+            <button
+              className={`py-3 px-1 font-medium ${
                 activeTab === 'active'
                   ? 'text-blue-600 border-b-2 border-blue-600'
                   : 'text-gray-600 hover:text-gray-800'
@@ -127,6 +203,8 @@ const MyBidsPage = () => {
             <p className="text-gray-600 mb-4">
               {activeTab === 'active'
                 ? "You don't have any active bids. Find a task and place your first bid!"
+                : activeTab === 'all'
+                ? "You don't have any bids yet. Find a task and place your first bid!"
                 : "You don't have any completed, rejected, or cancelled bids."}
             </p>
             {activeTab === 'active' && (

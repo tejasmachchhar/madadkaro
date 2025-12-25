@@ -80,10 +80,10 @@ const createBid = asyncHandler(async (req, res) => {
   // Send real-time notification if socket is available
   const io = req.app.get('io');
   const userSockets = req.app.get('userSockets');
-  
+
   if (io && userSockets) {
     const customerSocketId = userSockets.get(task.customer._id.toString());
-    
+
     if (customerSocketId) {
       io.to(customerSocketId).emit('notification', {
         type: 'new_bid',
@@ -115,7 +115,7 @@ const createBid = asyncHandler(async (req, res) => {
 // @access  Private
 const getTaskBids = asyncHandler(async (req, res) => {
   const { taskId } = req.params;
-  
+
   // Check if task exists
   const task = await Task.findById(taskId);
   if (!task) {
@@ -139,7 +139,7 @@ const getTaskBids = asyncHandler(async (req, res) => {
   const bids = await Bid.find({ task: taskId })
     .populate('tasker', populateFields)
     .sort({ amount: 1 });
-  
+
   res.json(bids);
 });
 
@@ -179,7 +179,7 @@ const getUserBids = asyncHandler(async (req, res) => {
     }
   }
 
-  const bids = await Bid.find({ 
+  const bids = await Bid.find({
     tasker: req.user._id,
     ...statusFilter
   })
@@ -221,7 +221,7 @@ const getUserBids = asyncHandler(async (req, res) => {
 // @access  Private/Tasker
 const updateBid = asyncHandler(async (req, res) => {
   const { amount, message, estimatedDuration } = req.body;
-  
+
   const bid = await Bid.findById(req.params.id);
 
   if (bid) {
@@ -336,10 +336,10 @@ const acceptBid = asyncHandler(async (req, res) => {
     // Send real-time notification if socket is available
     const io = req.app.get('io');
     const userSockets = req.app.get('userSockets');
-    
+
     if (io && userSockets) {
       const taskerSocketId = userSockets.get(bid.tasker._id.toString());
-      
+
       if (taskerSocketId) {
         io.to(taskerSocketId).emit('notification', {
           type: 'bid_accepted',
@@ -367,7 +367,7 @@ const acceptBid = asyncHandler(async (req, res) => {
 // @access  Private/Customer
 const rejectBid = asyncHandler(async (req, res) => {
   const { reason } = req.body;
-  
+
   const bid = await Bid.findById(req.params.id)
     .populate('task')
     .populate('tasker', 'name email profilePicture avgRating totalReviews');
@@ -392,7 +392,7 @@ const rejectBid = asyncHandler(async (req, res) => {
     if (reason) {
       bid.rejectionReason = reason;
     }
-    
+
     await bid.save();
 
     // Create notification for the tasker
@@ -417,10 +417,10 @@ const rejectBid = asyncHandler(async (req, res) => {
     // Send real-time notification if socket is available
     const io = req.app.get('io');
     const userSockets = req.app.get('userSockets');
-    
+
     if (io && userSockets) {
       const taskerSocketId = userSockets.get(bid.tasker._id.toString());
-      
+
       if (taskerSocketId) {
         io.to(taskerSocketId).emit('notification', {
           type: 'bid_rejected',
@@ -498,7 +498,7 @@ const cancelBid = asyncHandler(async (req, res) => {
     // Update bid status to cancelled
     bid.status = 'cancelled';
     const updatedBid = await bid.save();
-    
+
     res.json({ message: 'Bid cancelled successfully', bid: updatedBid });
   } else {
     res.status(404);

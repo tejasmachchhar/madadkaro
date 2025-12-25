@@ -5,6 +5,7 @@ import { useAuth } from '../context/AuthContext';
 import { toast } from 'react-toastify';
 import { getCurrentPosition, getAddressFromCoordinates } from '../utils/locationUtils';
 import LocationPicker from '../components/LocationPicker';
+import realtimeService from '../services/realtimeService';
 
 const TasksPage = () => {
   const { currentUser } = useAuth();
@@ -69,6 +70,24 @@ const TasksPage = () => {
       }
     }
   }, [filters.category, categories]);
+  
+  // Set up real-time listeners for available tasks
+  useEffect(() => {
+    const unsubscribers = [];
+    
+    // Listen for task status changes (e.g., when a task is no longer open)
+    const unsubTaskStatus = realtimeService.subscribeToUserTasks((data) => {
+      // Remove the task from the list if it's no longer open
+      if (data.status !== 'open') {
+        setTasks(prevTasks => prevTasks.filter(task => task._id !== data.taskId));
+      }
+    });
+    unsubscribers.push(unsubTaskStatus);
+    
+    return () => {
+      unsubscribers.forEach(unsub => unsub());
+    };
+  }, []);
 
   const fetchTasks = async () => {
     try {

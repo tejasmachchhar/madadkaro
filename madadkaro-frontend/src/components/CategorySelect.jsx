@@ -25,6 +25,17 @@ const CategorySelect = ({
         const response = await api.get('/categories');
         setCategories(response.data);
         setLoading(false);
+        // If a selectedCategory was provided (could be a slug from URL),
+        // try to resolve it to the actual category _id and notify parent.
+        if (selectedCategory) {
+          const existsById = response.data.some(cat => cat._id === selectedCategory);
+          if (!existsById) {
+            const matched = response.data.find(cat => cat.slug === selectedCategory || cat.name?.toLowerCase() === selectedCategory.toLowerCase());
+            if (matched && typeof onCategoryChange === 'function') {
+              onCategoryChange(matched._id);
+            }
+          }
+        }
       } catch (error) {
         console.error('Error fetching categories:', error);
         toast.error('Failed to load categories');
@@ -75,6 +86,22 @@ const CategorySelect = ({
       }
     }
   }, [selectedCategory, categories, selectedSubcategory]); // Remove onSubcategoryChange from deps
+
+  // If categories are already loaded but selectedCategory is a slug (from URL),
+  // resolve it to _id and notify parent. This effect handles the case where
+  // the parent updates the selectedCategory after this component mounted
+  // (timing race between parent reading URL and this component fetching categories).
+  useEffect(() => {
+    if (!selectedCategory || categories.length === 0) return;
+
+    const existsById = categories.some(cat => cat._id === selectedCategory);
+    if (existsById) return; // already an id
+
+    const matched = categories.find(cat => cat.slug === selectedCategory || (cat.name && cat.name.toLowerCase() === selectedCategory.toLowerCase()));
+    if (matched && typeof onCategoryChange === 'function') {
+      onCategoryChange(matched._id);
+    }
+  }, [selectedCategory, categories, onCategoryChange]);
 
   // Handle category change
   const handleCategoryChange = (e) => {

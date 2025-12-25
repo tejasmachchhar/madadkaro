@@ -23,7 +23,10 @@ import {
   selectCategories,
   resetTaskErrors,
   selectAvailableTasksByCategory,
+  updateTaskDetailFromSocket,
+  updateTaskInList,
 } from '../store/slices/tasksSlice';
+import realtimeService from '../services/realtimeService';
 
 /**
  * Custom hook for tasks operations
@@ -155,6 +158,33 @@ export const useTasks = () => {
     (category) => useSelector((state) => selectAvailableTasksByCategory(state, category)),
     []
   );
+  
+  // Set up real-time listeners for task updates
+  useEffect(() => {
+    const unsubscribers = [];
+    
+    // Listen for task status changes
+    const unsubTaskStatus = realtimeService.subscribeToUserTasks((data) => {
+      // Re-fetch the task detail if it's the current task being viewed
+      if (taskDetail && taskDetail._id === data.taskId) {
+        dispatch(fetchTaskDetail({ taskId: data.taskId }));
+      }
+      
+      // Also refetch available tasks to keep them in sync
+      if (availableTasks && availableTasks.length > 0) {
+        const task = availableTasks.find(t => t._id === data.taskId);
+        if (task) {
+          // Optimistically update the task in the list
+          dispatch(updateTaskInList({ ...task, status: data.status }));
+        }
+      }
+    });
+    unsubscribers.push(unsubTaskStatus);
+    
+    return () => {
+      unsubscribers.forEach(unsub => unsub());
+    };
+  }, [taskDetail, availableTasks, dispatch]);
   
   return {
     // State

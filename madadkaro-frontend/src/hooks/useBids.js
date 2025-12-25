@@ -19,8 +19,12 @@ import {
   selectTaskBidsError,
   selectActiveBids,
   selectPendingBids,
+  selectRejectedBids,
   resetBidErrors,
+  updateBidFromSocket,
+  addBidToTask,
 } from '../store/slices/bidsSlice';
+import realtimeService from '../services/realtimeService';
 
 /**
  * Custom hook for bids operations
@@ -44,6 +48,7 @@ export const useBids = () => {
   
   const activeBids = useSelector(selectActiveBids);
   const pendingBids = useSelector(selectPendingBids);
+  const rejectedBids = useSelector(selectRejectedBids);
   
   // Handle errors
   useEffect(() => {
@@ -92,6 +97,44 @@ export const useBids = () => {
     [dispatch]
   );
   
+  // Set up real-time listeners for bid updates
+  useEffect(() => {
+    const unsubscribers = [];
+    
+    // Listen for bid status changes
+    const unsubBidStatus = realtimeService.subscribe('bid_status_changed', (data) => {
+      if (data.bidId) {
+        // Dispatch the update to Redux
+        dispatch(updateBidFromSocket({ _id: data.bidId, status: data.status }));
+      }
+    });
+    unsubscribers.push(unsubBidStatus);
+    
+    // Listen for new bids on tasks
+    const unsubNewBid = realtimeService.subscribe('bid_placed', (data) => {
+      if (data.taskId && taskBids.length > 0) {
+        const task = taskBids.find(t => t._id === data.taskId);
+        if (task) {
+          // Re-fetch task bids to get the new bid
+          dispatch(fetchTaskBids(data.taskId));
+        }
+      }
+    });
+    unsubscribers.push(unsubNewBid);
+    
+    // Listen for bid updates
+    const unsubBidUpdate = realtimeService.subscribe('bid_updated', (data) => {
+      if (data.bidId) {
+        dispatch(fetchBidDetail(data.bidId));
+      }
+    });
+    unsubscribers.push(unsubBidUpdate);
+    
+    return () => {
+      unsubscribers.forEach(unsub => unsub());
+    };
+  }, [taskBids, dispatch]);
+  
   return {
     // State
     myBids: Array.isArray(myBids) ? myBids : [],
@@ -105,6 +148,7 @@ export const useBids = () => {
     taskBidsError,
     activeBids: Array.isArray(activeBids) ? activeBids : [],
     pendingBids: Array.isArray(pendingBids) ? pendingBids : [],
+    rejectedBids: Array.isArray(rejectedBids) ? rejectedBids : [],
     
     // Actions
     getMyBids,

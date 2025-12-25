@@ -4,6 +4,7 @@ import { useAuth } from '../hooks/useAuth';
 import { useTasks } from '../hooks/useTasks';
 import api from '../services/api';
 import { toast } from 'react-toastify';
+import realtimeService from '../services/realtimeService';
 
 const MyTasksPage = () => {
   const { currentUser, isTasker, isCustomer } = useAuth();
@@ -12,6 +13,22 @@ const MyTasksPage = () => {
 
   useEffect(() => {
     fetchTasks();
+  }, [activeTab]);
+  
+  // Set up real-time listeners for task updates
+  useEffect(() => {
+    const unsubscribers = [];
+    
+    // Listen for task status changes
+    const unsubTaskStatus = realtimeService.subscribeToUserTasks((data) => {
+      // Refresh tasks when a task status changes
+      fetchTasks();
+    });
+    unsubscribers.push(unsubTaskStatus);
+    
+    return () => {
+      unsubscribers.forEach(unsub => unsub());
+    };
   }, [activeTab]);
 
   const fetchTasks = async () => {

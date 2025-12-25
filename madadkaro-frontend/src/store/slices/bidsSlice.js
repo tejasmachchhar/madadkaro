@@ -132,6 +132,35 @@ const bidsSlice = createSlice({
       state.bidDetail.error = null;
       state.taskBids.error = null;
     },
+    // Real-time update reducers
+    updateBidFromSocket: (state, action) => {
+      const updatedBid = action.payload;
+      
+      // Update in my bids if exists
+      state.myBids.data = state.myBids.data.map(bid => 
+        bid._id === updatedBid._id ? updatedBid : bid
+      );
+      
+      // Update in task bids if exists
+      state.taskBids.data = state.taskBids.data.map(bid => 
+        bid._id === updatedBid._id ? updatedBid : bid
+      );
+      
+      // Update bid detail if it's the same bid
+      if (state.bidDetail.data && state.bidDetail.data._id === updatedBid._id) {
+        state.bidDetail.data = updatedBid;
+      }
+    },
+    addBidToTask: (state, action) => {
+      // Add new bid to task bids list
+      const newBid = action.payload;
+      state.taskBids.data = [newBid, ...state.taskBids.data];
+      
+      // Also add to my bids if it's the current user's bid
+      if (!state.myBids.data.find(bid => bid._id === newBid._id)) {
+        state.myBids.data = [newBid, ...state.myBids.data];
+      }
+    },
   },
   extraReducers: (builder) => {
     builder
@@ -226,7 +255,7 @@ const bidsSlice = createSlice({
 });
 
 // Export actions and reducer
-export const { resetBidDetail, resetBidErrors } = bidsSlice.actions;
+export const { resetBidDetail, resetBidErrors, updateBidFromSocket, addBidToTask } = bidsSlice.actions;
 
 // Selectors
 export const selectMyBids = (state) => state.bids.myBids.data;
@@ -250,6 +279,11 @@ export const selectActiveBids = createSelector(
 export const selectPendingBids = createSelector(
   [selectMyBids],
   (myBids) => myBids.filter(bid => bid.status === 'pending')
+);
+
+export const selectRejectedBids = createSelector(
+  [selectMyBids],
+  (myBids) => myBids.filter(bid => bid.status === 'rejected')
 );
 
 export default bidsSlice.reducer; 

@@ -234,18 +234,18 @@ const ProfilePage = () => {
                   )}
                 </div>
                 
-                <div className="flex justify-end space-x-4 mt-6">
+                <div className="flex flex-col sm:flex-row gap-3 sm:justify-end mt-6">
                   <button
                     type="button"
                     onClick={() => setIsEditing(false)}
-                    className="bg-gray-200 text-gray-800 py-2 px-4 rounded hover:bg-gray-300 transition"
+                    className="bg-gray-200 text-gray-800 py-2 px-4 rounded hover:bg-gray-300 transition order-2 sm:order-1"
                     disabled={isLoading}
                   >
                     Cancel
                   </button>
                   <button
                     type="submit"
-                    className="bg-blue-600 text-white py-2 px-4 rounded hover:bg-blue-700 transition"
+                    className="bg-blue-600 text-white py-2 px-4 rounded hover:bg-blue-700 transition order-1 sm:order-2"
                     disabled={isLoading}
                   >
                     {isLoading ? 'Saving...' : 'Save Changes'}

@@ -35,33 +35,33 @@ const protect = asyncHandler(async (req, res, next) => {
 });
 
 // Admin middleware
-const admin = (req, res, next) => {
+const admin = asyncHandler(async (req, res, next) => {
   if (req.user && req.user.role === 'admin') {
     next();
   } else {
     res.status(401);
     throw new Error('Not authorized as an admin');
   }
-};
+});
 
 // Customer middleware
-const customer = (req, res, next) => {
+const customer = asyncHandler(async (req, res, next) => {
   if (req.user && (req.user.role === 'customer' || req.user.role === 'admin')) {
     next();
   } else {
     res.status(401);
     throw new Error('Not authorized as a customer');
   }
-};
+});
 
 // Tasker middleware
-const tasker = (req, res, next) => {
+const tasker = asyncHandler(async (req, res, next) => {
   if (req.user && (req.user.role === 'tasker' || req.user.role === 'admin')) {
     next();
   } else {
     res.status(401);
     throw new Error('Not authorized as a tasker');
   }
-};
+});
 
 module.exports = { protect, admin, customer, tasker }; 

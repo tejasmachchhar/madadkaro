@@ -1,6 +1,7 @@
 import { createContext, useState, useEffect, useContext } from 'react';
 import api from '../services/api';
 import socketService from '../services/socket';
+import realtimeService from '../services/realtimeService';
 
 // Create a context
 const AuthContext = createContext();
@@ -20,7 +21,11 @@ export const AuthProvider = ({ children }) => {
         if (userInfo && token) {
           setCurrentUser(JSON.parse(userInfo));
           // Initialize socket connection with token
-          socketService.initializeSocket(token);
+          const socket = socketService.initializeSocket(token);
+          // Initialize realtime service with socket
+          if (socket) {
+            realtimeService.initializeSocket(socket);
+          }
         }
       } catch (error) {
         console.error('Failed to load user info:', error);

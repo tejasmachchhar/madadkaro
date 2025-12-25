@@ -29,4 +29,4 @@ router.put('/:id/accept', protect, customer, acceptBid);
 router.put('/:id/reject', protect, customer, rejectBid);
 router.put('/:id/cancel', protect, tasker, cancelBid);
 
-module.exports = router; 
+module.exports = router;
