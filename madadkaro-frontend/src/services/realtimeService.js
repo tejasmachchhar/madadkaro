@@ -107,6 +107,7 @@ class RealtimeService {
       'bid_status_changed': 'notification',
       'message_received': 'new_message',
       'review_added': 'notification',
+      'review_received': 'notification',
       'notification': 'notification'
     };
 
@@ -117,10 +118,10 @@ class RealtimeService {
     // For notification events, filter by type
     socket.on(socketEvent, (data) => {
       console.log(`[RealtimeService] Real-time event received on ${socketEvent}:`, data);
-      
+
       // Check if this notification matches the event type we're listening for
       let shouldTrigger = false;
-      
+
       if (socketEvent === 'notification') {
         // Map notification types to our event types
         const notificationToEventMap = {
@@ -128,12 +129,15 @@ class RealtimeService {
           'completion_requested': 'task_status_changed',
           'completion_confirmed': 'task_status_changed',
           'completion_rejected': 'task_status_changed',
+          'task_cancelled': 'task_status_changed',
+          'task_assigned': 'task_status_changed',
           'new_bid': 'bid_placed',
           'bid_accepted': 'bid_status_changed',
           'bid_rejected': 'bid_status_changed',
-          'bid_updated': 'bid_updated'
+          'bid_updated': 'bid_updated',
+          'review_received': 'review_added'
         };
-        
+
         const mappedEvent = notificationToEventMap[data.type];
         shouldTrigger = mappedEvent === eventType;
         console.log(`[RealtimeService] Mapped notification type "${data.type}" to event "${mappedEvent}", shouldTrigger for "${eventType}":`, shouldTrigger);
@@ -144,8 +148,11 @@ class RealtimeService {
       }
 
       if (shouldTrigger) {
-        console.log(`[RealtimeService] Triggering callbacks for event type: ${eventType}`);
+        console.log(`[RealtimeService] Triggering callbacks for event type: ${eventType} with data:`, data);
+        console.log(`[RealtimeService] Calling _triggerCallbacks with eventType: ${eventType}`);
         this._triggerCallbacks(eventType, data);
+      } else {
+        console.log(`[RealtimeService] NOT triggering callbacks for event type: ${eventType} (shouldTrigger: ${shouldTrigger})`);
       }
     });
   }
@@ -234,6 +241,15 @@ class RealtimeService {
    */
   subscribeToReviews(taskId, callback) {
     return this.subscribe('review_added', callback, `task-reviews-${taskId}`);
+  }
+
+  /**
+   * Subscribe to review notifications for taskers
+   * @param {function} callback - Callback function
+   * @returns {function} Unsubscribe function
+   */
+  subscribeToReviewNotifications(callback) {
+    return this.subscribe('review_added', callback, 'review-notifications');
   }
 
   /**

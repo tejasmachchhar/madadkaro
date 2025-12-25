@@ -218,7 +218,23 @@ const MyBidsPage = () => {
           </div>
         ) : (
           <div className="space-y-4">
-            {myBids.map((bid) => (
+            {/* Sort bids for 'all' tab: active bids (pending + accepted with non-completed tasks) first, then others */}
+            {(() => {
+              const sortedBids = activeTab === 'all'
+                ? [...myBids].sort((a, b) => {
+                    // Active bids: pending bids OR accepted bids with non-completed tasks
+                    const isActiveA = a.status === 'pending' ||
+                      (a.status === 'accepted' && a.task && a.task.status !== 'completed');
+                    const isActiveB = b.status === 'pending' ||
+                      (b.status === 'accepted' && b.task && b.task.status !== 'completed');
+
+                    if (isActiveA && !isActiveB) return -1;
+                    if (!isActiveA && isActiveB) return 1;
+                    return 0; // Maintain original order for same priority bids
+                  })
+                : myBids;
+
+              return sortedBids.map((bid) => (
               <div key={bid._id} className="bg-white rounded-lg shadow-sm p-6">
                 <div className="flex flex-wrap justify-between items-start gap-4">
                   <div className="flex-1">
@@ -226,7 +242,11 @@ const MyBidsPage = () => {
                       <h2 className="text-xl font-semibold text-gray-800 mr-3">
                         {bid.task ? bid.task.title : 'Task'}
                       </h2>
-                      {getStatusBadge(bid.status)}
+                      {getStatusBadge(
+                        bid.status === 'accepted' && bid.task
+                          ? bid.task.status
+                          : bid.status
+                      )}
                     </div>
                     
                     <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
@@ -249,15 +269,6 @@ const MyBidsPage = () => {
                       <p className="text-gray-700 mt-1">{bid.message}</p>
                     </div>
                     
-                    {/* Show task status if bid is accepted */}
-                    {bid.status === 'accepted' && bid.task && (
-                      <div className="mb-4">
-                        <span className="text-xs text-gray-500">Task Status</span>
-                        <div className="mt-1">
-                          {getStatusBadge(bid.task.status)}
-                        </div>
-                      </div>
-                    )}
                   </div>
                   
                   <div className="flex flex-col space-y-2">
@@ -314,7 +325,8 @@ const MyBidsPage = () => {
                 )}
 
               </div>
-            ))}
+            ));
+            })()}
           </div>
         )}
       </div>

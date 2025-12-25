@@ -61,10 +61,16 @@ const createTask = asyncHandler(async (req, res) => {
   });
 
   if (req.body.latitude && req.body.longitude) {
-    task.location = {
-      type: 'Point',
-      coordinates: [parseFloat(req.body.longitude), parseFloat(req.body.latitude)]
-    };
+    const lat = parseFloat(req.body.latitude);
+    const lng = parseFloat(req.body.longitude);
+
+    // Validate coordinates are valid numbers and within valid ranges
+    if (!isNaN(lat) && !isNaN(lng) && lat >= -90 && lat <= 90 && lng >= -180 && lng <= 180) {
+      task.location = {
+        type: 'Point',
+        coordinates: [lng, lat] // MongoDB expects [longitude, latitude]
+      };
+    }
   }
 
   // If there are images, add them
@@ -473,49 +479,54 @@ const updateTaskStatus = asyncHandler(async (req, res) => {
   // Update the task status
   task.status = newStatus;
 
-  // If completing the task, set completedAt
+  // Set timestamps based on status
   if (newStatus === 'completed') {
     task.completedAt = new Date();
-  }
-  
-  // If starting the task, set startedAt
-  if (newStatus === 'inProgress' && task.status !== 'inProgress') {
+  } else if (newStatus === 'inProgress' && task.status !== 'inProgress') {
     task.startedAt = new Date();
-    
-    // Create notification for the customer
+  }
+
+  // Create universal task status change notifications
+  console.log(`[TaskStatus] Status change: ${task.status} -> ${newStatus} for task ${task._id}`);
+  await sendTaskStatusChangeNotifications(task, newStatus, req.user, req.app);
+
+  // If cancelling the task, notify the tasker
+  if (newStatus === 'cancelled' && task.status !== 'cancelled') {
+    // Create notification for the tasker
     const notification = new Notification({
-      recipient: task.customer._id,
+      recipient: task.assignedTo._id,
       sender: req.user._id,
-      type: 'task_started',
-      title: 'Task Started',
-      message: `${req.user.name} has started working on task "${task.title}".`,
+      type: 'task_cancelled',
+      title: 'Task Cancelled',
+      message: `The task "${task.title}" has been cancelled.`,
       task: task._id,
       data: {
-        taskerId: req.user._id,
-        taskerName: req.user.name,
+        customerId: req.user._id,
+        customerName: req.user.name,
         taskTitle: task.title,
         taskId: task._id
       },
     });
-    
+
     await notification.save();
-    
+
     // Send real-time notification if socket is available
     const io = req.app.get('io');
     const userSockets = req.app.get('userSockets');
-    
-    if (io && userSockets && userSockets.has(task.customer._id.toString())) {
-      const socketId = userSockets.get(task.customer._id.toString());
+
+    if (io && userSockets && userSockets.has(task.assignedTo._id.toString())) {
+      const socketId = userSockets.get(task.assignedTo._id.toString());
       if (socketId) {
-        io.to(socketId).emit('notification', {
-          type: 'task_started',
-          message: `${req.user.name} has started working on task "${task.title}".`,
-          data: {
-            taskId: task._id,
-            taskTitle: task.title,
-            taskerName: req.user.name,
-          },
-        });
+    io.to(socketId).emit('notification', {
+      type: 'task_cancelled',
+      message: `The task "${task.title}" has been cancelled.`,
+      data: {
+        taskId: task._id,
+        status: 'cancelled',
+        taskTitle: task.title,
+        customerName: req.user.name,
+      },
+    });
       }
     }
   }
@@ -645,6 +656,7 @@ const requestTaskCompletion = asyncHandler(async (req, res) => {
         message: `${req.user.name} has requested to mark task "${task.title}" as completed.`,
         data: {
           taskId: task._id,
+          status: 'completionRequested',
           taskTitle: task.title,
           taskerName: req.user.name,
         },
@@ -721,6 +733,7 @@ const confirmTaskCompletion = asyncHandler(async (req, res) => {
       message: `${req.user.name} has confirmed completion of task "${task.title}".`,
       data: {
         taskId: task._id,
+        status: 'completed',
         taskTitle: task.title,
         customerName: req.user.name,
       },
@@ -791,6 +804,7 @@ const rejectTaskCompletion = asyncHandler(async (req, res) => {
       message: `${req.user.name} has rejected the completion request for task "${task.title}".`,
       data: {
         taskId: task._id,
+        status: 'inProgress',
         taskTitle: task.title,
         customerName: req.user.name,
         rejectionReason: rejectionReason || '',
@@ -831,6 +845,128 @@ const addTaskerFeedback = asyncHandler(async (req, res) => {
 
   res.json(updatedTask);
 });
+
+// Helper function to send notifications for task status changes
+const sendTaskStatusChangeNotifications = async (task, newStatus, user, app) => {
+  const notifications = [];
+  const io = app.get('io');
+  const userSockets = app.get('userSockets');
+
+  console.log(`[TaskNotifications] Sending notifications for status change to ${newStatus}`);
+
+  // Define notification messages and types for each status
+  const statusConfig = {
+    assigned: {
+      type: 'task_assigned',
+      title: 'Task Assigned',
+      getMessage: (task, user) => `Your task "${task.title}" has been assigned to ${task.assignedTo.name}.`,
+      recipients: ['customer']
+    },
+    inProgress: {
+      type: 'task_started',
+      title: 'Task Started',
+      getMessage: (task, user) => task.assignedTo._id.toString() === user._id.toString()
+        ? `You have started working on task "${task.title}".`
+        : `${user.name} has started working on task "${task.title}".`,
+      recipients: ['customer', 'tasker']
+    },
+    completionRequested: {
+      type: 'completion_requested',
+      title: 'Task Completion Requested',
+      getMessage: (task, user) => `${user.name} has requested to mark task "${task.title}" as completed.`,
+      recipients: ['customer']
+    },
+    completed: {
+      type: 'completion_confirmed',
+      title: 'Task Completed',
+      getMessage: (task, user) => task.customer._id.toString() === user._id.toString()
+        ? `You have confirmed completion of task "${task.title}".`
+        : `Task "${task.title}" has been completed.`,
+      recipients: ['customer', 'tasker']
+    },
+    cancelled: {
+      type: 'task_cancelled',
+      title: 'Task Cancelled',
+      getMessage: (task, user) => `Task "${task.title}" has been cancelled.`,
+      recipients: ['customer', 'tasker']
+    }
+  };
+
+  const config = statusConfig[newStatus];
+  if (!config) {
+    console.log(`[TaskNotifications] No config found for status ${newStatus}`);
+    return;
+  }
+
+  // Create notifications for all recipients
+  const recipients = [];
+  if (config.recipients.includes('customer')) {
+    recipients.push({
+      userId: task.customer._id,
+      userName: task.customer.name,
+      role: 'customer'
+    });
+  }
+  if (config.recipients.includes('tasker') && task.assignedTo) {
+    recipients.push({
+      userId: task.assignedTo._id,
+      userName: task.assignedTo.name,
+      role: 'tasker'
+    });
+  }
+
+  for (const recipient of recipients) {
+    // Skip self-notifications for some cases
+    if (recipient.userId.toString() === user._id.toString() && config.type === 'completion_requested') {
+      continue; // Tasker doesn't need notification about their own completion request
+    }
+
+    console.log(`[TaskNotifications] Creating notification for ${recipient.role}: ${recipient.userId}`);
+
+    const notification = new Notification({
+      recipient: recipient.userId,
+      sender: user._id,
+      type: config.type,
+      title: config.title,
+      message: config.getMessage(task, user),
+      task: task._id,
+      data: {
+        taskId: task._id,
+        status: newStatus,
+        taskTitle: task.title,
+        taskerId: task.assignedTo?._id,
+        taskerName: task.assignedTo?.name,
+        customerId: task.customer._id,
+        customerName: task.customer.name,
+        updatedBy: user._id,
+        updatedByName: user.name
+      },
+    });
+
+    await notification.save();
+    notifications.push({ notification, recipient });
+    console.log(`[TaskNotifications] Saved notification: ${config.type} to ${recipient.userId}`);
+  }
+
+  // Send real-time notifications
+  if (io && userSockets) {
+    for (const { notification, recipient } of notifications) {
+      const socketId = userSockets.get(recipient.userId.toString());
+      if (socketId) {
+        console.log(`[TaskNotifications] Sending socket notification ${notification.type} to ${recipient.userId} (socket: ${socketId})`);
+        io.to(socketId).emit('notification', {
+          type: notification.type,
+          message: notification.message,
+          data: notification.data,
+        });
+      } else {
+        console.log(`[TaskNotifications] No socket found for ${recipient.userId}`);
+      }
+    }
+  } else {
+    console.log('[TaskNotifications] Socket.io not available');
+  }
+};
 
 module.exports = {
   createTask,

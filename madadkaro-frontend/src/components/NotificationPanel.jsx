@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import api from '../services/api';
+import socketService from '../services/socket';
 import { BellIcon, CheckIcon } from '@heroicons/react/24/outline';
 
 const NotificationPanel = () => {
@@ -22,9 +23,27 @@ const NotificationPanel = () => {
   useEffect(() => {
     if (currentUser) {
       fetchNotifications();
-      // Poll for new notifications every minute
-      const interval = setInterval(fetchNotifications, 60000);
-      return () => clearInterval(interval);
+
+      // Set up real-time socket listener for new notifications
+      const socket = socketService.getSocket();
+      if (socket) {
+        const handleNewNotification = (notification) => {
+          console.log('[NotificationPanel] New notification received:', notification);
+          // Add the new notification to the beginning of the list
+          setNotifications(prev => [notification, ...prev]);
+          setUnreadCount(prev => prev + 1);
+        };
+
+        socket.on('notification', handleNewNotification);
+
+        // Also poll for notifications every 2 minutes as a fallback
+        const pollInterval = setInterval(fetchNotifications, 120000); // 2 minutes
+
+        return () => {
+          socket.off('notification', handleNewNotification);
+          clearInterval(pollInterval);
+        };
+      }
     }
   }, [currentUser]);
 

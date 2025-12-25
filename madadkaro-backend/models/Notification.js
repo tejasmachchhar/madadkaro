@@ -14,7 +14,22 @@ const notificationSchema = mongoose.Schema(
     type: {
       type: String,
       required: true,
-      enum: ['bid', 'bid_accepted', 'bid_rejected', 'message', 'task_update', 'system'],
+      enum: [
+        'bid',
+        'new_bid',
+        'bid_accepted',
+        'bid_rejected',
+        'task_assigned',
+        'task_started',
+        'task_cancelled',
+        'completion_requested',
+        'completion_confirmed',
+        'completion_rejected',
+        'review_received',
+        'message',
+        'task_update',
+        'system'
+      ],
     },
     title: {
       type: String,

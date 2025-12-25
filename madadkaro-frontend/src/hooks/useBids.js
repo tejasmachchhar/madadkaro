@@ -22,6 +22,7 @@ import {
   selectRejectedBids,
   resetBidErrors,
   updateBidFromSocket,
+  updateTaskInBids,
   addBidToTask,
 } from '../store/slices/bidsSlice';
 import realtimeService from '../services/realtimeService';
@@ -103,21 +104,53 @@ export const useBids = () => {
     
     // Listen for bid status changes
     const unsubBidStatus = realtimeService.subscribe('bid_status_changed', (data) => {
+      console.log('[useBids] Received bid_status_changed event:', data);
       if (data.bidId) {
-        // Dispatch the update to Redux
-        dispatch(updateBidFromSocket({ _id: data.bidId, status: data.status }));
+        console.log('[useBids] Updating bid status for bidId:', data.bidId, 'to status:', data.status);
+        // Dispatch the update to Redux with all available data
+        const updateData = { _id: data.bidId, status: data.status };
+        if (data.amount) updateData.amount = data.amount;
+        if (data.taskTitle) updateData.taskTitle = data.taskTitle;
+        dispatch(updateBidFromSocket(updateData));
+        console.log('[useBids] Dispatched updateBidFromSocket with:', updateData);
+      } else {
+        console.log('[useBids] No bidId in bid_status_changed event data');
       }
     });
     unsubscribers.push(unsubBidStatus);
+
+    // Listen for task status changes that might affect bids
+    const unsubTaskStatus = realtimeService.subscribe('task_status_changed', (data) => {
+      console.log('[useBids] Received task_status_changed event:', data);
+      if (data.taskId) {
+        console.log('[useBids] Current myBids count:', myBids.length);
+        console.log('[useBids] Bids with matching taskId:', myBids.filter(bid => bid.task?._id === data.taskId).length);
+
+        // Update task status in existing bids immediately
+        console.log('[useBids] Updating task status for taskId:', data.taskId, 'to status:', data.status);
+        dispatch(updateTaskInBids({ taskId: data.taskId, status: data.status }));
+
+        // Refetch bids after a delay to get server-confirmed data
+        console.log('[useBids] Scheduling bids refetch after delay');
+        setTimeout(() => {
+          getMyBids();
+        }, 3000); // Longer delay to ensure server update is complete
+      }
+    });
+    unsubscribers.push(unsubTaskStatus);
     
     // Listen for new bids on tasks
     const unsubNewBid = realtimeService.subscribe('bid_placed', (data) => {
+      console.log('[useBids] Received bid_placed event:', data);
       if (data.taskId && taskBids.length > 0) {
+        console.log('[useBids] Found task in taskBids, refetching bids for taskId:', data.taskId);
         const task = taskBids.find(t => t._id === data.taskId);
         if (task) {
           // Re-fetch task bids to get the new bid
           dispatch(fetchTaskBids(data.taskId));
         }
+      } else {
+        console.log('[useBids] No matching task found in taskBids or no taskId');
       }
     });
     unsubscribers.push(unsubNewBid);

@@ -11,6 +11,7 @@ const {
   updateUser,
   registerDeviceToken,
   unregisterDeviceToken,
+  getTaskerEarnings,
   // Address management controllers
   addAddress,
   getAddresses,
@@ -29,6 +30,9 @@ router.post('/login', loginUser);
 router.route('/profile')
   .get(protect, getUserProfile)
   .put(protect, upload.single('profilePicture'), updateUserProfile);
+
+router.route('/earnings')
+  .get(protect, getTaskerEarnings);
 
 // Admin Routes
 router.route('/')

@@ -2,6 +2,7 @@ const asyncHandler = require('express-async-handler');
 const Review = require('../models/reviewModel');
 const Task = require('../models/Task');
 const User = require('../models/User');
+const Notification = require('../models/Notification');
 const mongoose = require('mongoose');
 
 // @desc    Create a new review
@@ -68,7 +69,48 @@ const createReview = asyncHandler(async (req, res) => {
   
   // Update tasker's average rating
   await updateTaskerRatingStats(taskerId);
-  
+
+  // Create notification for the tasker
+  const notification = new Notification({
+    recipient: taskerId,
+    sender: req.user._id,
+    type: 'review_received',
+    title: 'New Review Received',
+    message: `${req.user.name} has left you a ${rating}-star review for task "${task.title}".`,
+    task: taskId,
+    data: {
+      rating,
+      reviewerName: req.user.name,
+      taskTitle: task.title,
+      comment: comment || '',
+    },
+  });
+
+  await notification.save();
+
+  // Send real-time notification if socket is available
+  const io = req.app.get('io');
+  const userSockets = req.app.get('userSockets');
+
+  if (io && userSockets) {
+    const taskerSocketId = userSockets.get(taskerId.toString());
+
+    if (taskerSocketId) {
+      io.to(taskerSocketId).emit('notification', {
+        type: 'review_received',
+        message: `${req.user.name} has left you a ${rating}-star review for task "${task.title}".`,
+        data: {
+          taskId,
+          reviewerId: req.user._id,
+          reviewerName: req.user.name,
+          taskTitle: task.title,
+          rating,
+          comment: comment || '',
+        },
+      });
+    }
+  }
+
   res.status(201).json(review);
 });
 

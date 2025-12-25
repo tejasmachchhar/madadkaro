@@ -79,9 +79,13 @@ const CustomerHomePage = () => {
         return 'bg-blue-100 text-blue-800';
       case 'assigned':
         return 'bg-green-100 text-green-800';
+      case 'inProgress':
+        return 'bg-yellow-100 text-yellow-800';
+      case 'completionRequested':
+        return 'bg-orange-100 text-orange-800';
       case 'completed':
         return 'bg-purple-100 text-purple-800';
-      case 'canceled':
+      case 'cancelled':
         return 'bg-red-100 text-red-800';
       default:
         return 'bg-gray-100 text-gray-800';
@@ -117,15 +121,15 @@ const CustomerHomePage = () => {
                 </div>
                 <div className="bg-white bg-opacity-20 p-4 rounded-lg text-center">
                   <div className="text-2xl font-bold">{myRecentTasks.filter(task => task.status === 'assigned').length}</div>
+                  <div className="text-sm">Assigned</div>
+                </div>
+                <div className="bg-white bg-opacity-20 p-4 rounded-lg text-center">
+                  <div className="text-2xl font-bold">{myRecentTasks.filter(task => task.status === 'inProgress').length}</div>
                   <div className="text-sm">In Progress</div>
                 </div>
                 <div className="bg-white bg-opacity-20 p-4 rounded-lg text-center">
                   <div className="text-2xl font-bold">{myRecentTasks.filter(task => task.status === 'completed').length}</div>
                   <div className="text-sm">Completed</div>
-                </div>
-                <div className="bg-white bg-opacity-20 p-4 rounded-lg text-center">
-                  <div className="text-2xl font-bold">{myRecentTasks.length}</div>
-                  <div className="text-sm">Total Tasks</div>
                 </div>
               </div>
             </div>

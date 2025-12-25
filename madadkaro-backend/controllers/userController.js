@@ -1,5 +1,6 @@
 const asyncHandler = require('express-async-handler');
 const User = require('../models/User');
+const Task = require('../models/Task');
 const generateToken = require('../utils/generateToken');
 const { storeDeviceToken, removeDeviceToken } = require('../services/pushNotificationService');
 
@@ -406,6 +407,113 @@ const setDefaultAddress = asyncHandler(async (req, res) => {
   }
 });
 
+// @desc    Get tasker earnings summary
+// @route   GET /api/users/earnings
+// @access  Private/Tasker
+const getTaskerEarnings = asyncHandler(async (req, res) => {
+  // Check if user is a tasker
+  if (req.user.role !== 'tasker' && req.user.role !== 'admin') {
+    res.status(401);
+    throw new Error('Only taskers can view earnings');
+  }
+
+  const taskerId = req.user._id;
+
+  // Get today's date range
+  const today = new Date();
+  today.setHours(0, 0, 0, 0);
+  const tomorrow = new Date(today);
+  tomorrow.setDate(tomorrow.getDate() + 1);
+
+  // Get completed tasks by this tasker
+  const completedTasks = await Task.find({
+    assignedTo: taskerId,
+    status: 'completed'
+  }).select('finalTaskerPayout budget commissionAmount createdAt completedAt');
+
+  // Calculate today's earnings
+  const todayTasks = completedTasks.filter(task =>
+    task.completedAt && task.completedAt >= today && task.completedAt < tomorrow
+  );
+
+  const todayEarnings = todayTasks.reduce((sum, task) => sum + (task.finalTaskerPayout || 0), 0);
+  const todayTasksCount = todayTasks.length;
+
+  // Calculate total earnings and stats
+  const totalEarnings = completedTasks.reduce((sum, task) => sum + (task.finalTaskerPayout || 0), 0);
+  const totalTasksCompleted = completedTasks.length;
+
+  // Calculate this week's earnings (last 7 days)
+  const weekAgo = new Date();
+  weekAgo.setDate(weekAgo.getDate() - 7);
+  const thisWeekTasks = completedTasks.filter(task =>
+    task.completedAt && task.completedAt >= weekAgo
+  );
+  const thisWeekEarnings = thisWeekTasks.reduce((sum, task) => sum + (task.finalTaskerPayout || 0), 0);
+
+  // Calculate monthly earnings (current month)
+  const monthStart = new Date(today.getFullYear(), today.getMonth(), 1);
+  const thisMonthTasks = completedTasks.filter(task =>
+    task.completedAt && task.completedAt >= monthStart
+  );
+  const thisMonthEarnings = thisMonthTasks.reduce((sum, task) => sum + (task.finalTaskerPayout || 0), 0);
+
+  // Calculate average earnings per task
+  const averageEarningsPerTask = totalTasksCompleted > 0 ? totalEarnings / totalTasksCompleted : 0;
+
+  // Get active tasks (in progress)
+  const activeTasks = await Task.find({
+    assignedTo: taskerId,
+    status: { $in: ['assigned', 'inProgress', 'completionRequested'] }
+  }).select('budget title');
+
+  // Calculate potential earnings from active tasks (assuming they complete)
+  const potentialEarnings = activeTasks.reduce((sum, task) => sum + (task.finalTaskerPayout || task.budget * 0.85), 0);
+
+  // Set daily target (example: ₹1000 per day)
+  const dailyTarget = 1000;
+  const dailyProgress = (todayEarnings / dailyTarget) * 100;
+
+  // Set weekly target (example: ₹5000 per week)
+  const weeklyTarget = 5000;
+  const weeklyProgress = (thisWeekEarnings / weeklyTarget) * 100;
+
+  res.json({
+    today: {
+      earnings: todayEarnings,
+      tasksCompleted: todayTasksCount,
+      progress: Math.min(dailyProgress, 100), // Cap at 100%
+      target: dailyTarget,
+      targetAchieved: todayEarnings >= dailyTarget
+    },
+    week: {
+      earnings: thisWeekEarnings,
+      progress: Math.min(weeklyProgress, 100),
+      target: weeklyTarget,
+      targetAchieved: thisWeekEarnings >= weeklyTarget
+    },
+    month: {
+      earnings: thisMonthEarnings
+    },
+    total: {
+      earnings: totalEarnings,
+      tasksCompleted: totalTasksCompleted,
+      averagePerTask: averageEarningsPerTask
+    },
+    activeTasks: {
+      count: activeTasks.length,
+      potentialEarnings: potentialEarnings
+    },
+    // Motivational data
+    motivation: {
+      streak: 0, // TODO: Implement task completion streak
+      rank: 'Bronze', // TODO: Implement ranking system
+      nextMilestone: 10000, // Next earnings milestone
+      progressToMilestone: (totalEarnings / 10000) * 100
+    }
+  });
+});
+
 module.exports = {
   registerUser,
   loginUser,
@@ -417,6 +525,7 @@ module.exports = {
   updateUser,
   registerDeviceToken,
   unregisterDeviceToken,
+  getTaskerEarnings,
   // Address management
   addAddress,
   getAddresses,

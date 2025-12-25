@@ -24,6 +24,7 @@ export const initializeSocket = (token) => {
   });
 
   socket.on('notification', (notification) => {
+    console.log('[Socket] Received notification:', notification);
     // Handle different notification types
     switch (notification.type) {
       case 'new_bid':
@@ -31,11 +32,6 @@ export const initializeSocket = (token) => {
           onClick: () => {
             window.location.href = `/tasks/${notification.data.taskId}`;
           }
-        });
-        // Emit real-time event for bid placed
-        socket.emit('bid_placed', {
-          taskId: notification.data.taskId,
-          ...notification.data
         });
         // Update notification count or list if needed
         if (window.updateNotifications) {
@@ -48,13 +44,27 @@ export const initializeSocket = (token) => {
             window.location.href = `/tasks/${notification.data.taskId}`;
           }
         });
-        // Emit real-time event for bid status change
-        socket.emit('bid_status_changed', {
-          taskId: notification.data.taskId,
-          status: 'accepted',
-          ...notification.data
-        });
         // Update notification count or list if needed
+        if (window.updateNotifications) {
+          window.updateNotifications();
+        }
+        break;
+      case 'task_assigned':
+        toast.success(notification.message, {
+          onClick: () => {
+            window.location.href = `/tasks/${notification.data.taskId}`;
+          }
+        });
+        if (window.updateNotifications) {
+          window.updateNotifications();
+        }
+        break;
+      case 'task_cancelled':
+        toast.warning(notification.message, {
+          onClick: () => {
+            window.location.href = `/tasks/${notification.data.taskId}`;
+          }
+        });
         if (window.updateNotifications) {
           window.updateNotifications();
         }
@@ -63,17 +73,11 @@ export const initializeSocket = (token) => {
         const message = notification.data.reason
           ? `${notification.message} Reason: ${notification.data.reason}`
           : notification.message;
-        
+
         toast.error(message, {
           onClick: () => {
             window.location.href = `/tasks/${notification.data.taskId}`;
           }
-        });
-        // Emit real-time event for bid status change
-        socket.emit('bid_status_changed', {
-          taskId: notification.data.taskId,
-          status: 'rejected',
-          ...notification.data
         });
         // Update notification count or list if needed
         if (window.updateNotifications) {
@@ -87,12 +91,6 @@ export const initializeSocket = (token) => {
             window.location.href = `/tasks/${notification.data.taskId}`;
           }
         });
-        // Emit real-time event for task status change
-        socket.emit('task_status_changed', {
-          taskId: notification.data.taskId,
-          status: 'inProgress',
-          ...notification.data
-        });
         if (window.updateNotifications) {
           window.updateNotifications();
         }
@@ -105,12 +103,6 @@ export const initializeSocket = (token) => {
           onClick: () => {
             window.location.href = `/tasks/${notification.data.taskId}`;
           }
-        });
-        // Emit real-time event for task status change
-        socket.emit('task_status_changed', {
-          taskId: notification.data.taskId,
-          status: 'completionRequested',
-          ...notification.data
         });
         if (window.updateNotifications) {
           window.updateNotifications();
@@ -126,12 +118,6 @@ export const initializeSocket = (token) => {
             window.location.href = `/tasks/${notification.data.taskId}`;
           }
         });
-        // Emit real-time event for task status change
-        socket.emit('task_status_changed', {
-          taskId: notification.data.taskId,
-          status: 'completed',
-          ...notification.data
-        });
         if (window.updateNotifications) {
           window.updateNotifications();
         }
@@ -146,17 +132,31 @@ export const initializeSocket = (token) => {
             window.location.href = `/tasks/${notification.data.taskId}`;
           }
         });
-        // Emit real-time event for task status change
-        socket.emit('task_status_changed', {
-          taskId: notification.data.taskId,
-          status: 'inProgress',
-          ...notification.data
-        });
         if (window.updateNotifications) {
           window.updateNotifications();
         }
         if (window.refreshTaskDetails && notification.data.taskId) {
           window.refreshTaskDetails(notification.data.taskId);
+        }
+        break;
+      case 'review_received':
+        toast.info(notification.message, {
+          onClick: () => {
+            window.location.href = `/tasks/${notification.data.taskId}`;
+          }
+        });
+        if (window.updateNotifications) {
+          window.updateNotifications();
+        }
+        break;
+      case 'task_cancelled':
+        toast.warning(notification.message, {
+          onClick: () => {
+            window.location.href = `/tasks/${notification.data.taskId}`;
+          }
+        });
+        if (window.updateNotifications) {
+          window.updateNotifications();
         }
         break;
       default:

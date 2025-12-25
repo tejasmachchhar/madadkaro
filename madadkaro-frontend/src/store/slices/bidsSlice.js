@@ -135,21 +135,56 @@ const bidsSlice = createSlice({
     // Real-time update reducers
     updateBidFromSocket: (state, action) => {
       const updatedBid = action.payload;
-      
+
       // Update in my bids if exists
-      state.myBids.data = state.myBids.data.map(bid => 
-        bid._id === updatedBid._id ? updatedBid : bid
+      state.myBids.data = state.myBids.data.map(bid =>
+        bid._id === updatedBid._id ? { ...bid, ...updatedBid } : bid
       );
-      
+
       // Update in task bids if exists
-      state.taskBids.data = state.taskBids.data.map(bid => 
-        bid._id === updatedBid._id ? updatedBid : bid
+      state.taskBids.data = state.taskBids.data.map(bid =>
+        bid._id === updatedBid._id ? { ...bid, ...updatedBid } : bid
       );
-      
+
       // Update bid detail if it's the same bid
       if (state.bidDetail.data && state.bidDetail.data._id === updatedBid._id) {
-        state.bidDetail.data = updatedBid;
+        state.bidDetail.data = { ...state.bidDetail.data, ...updatedBid };
       }
+    },
+    updateTaskInBids: (state, action) => {
+      const { taskId, status } = action.payload;
+      console.log('[updateTaskInBids] Updating task', taskId, 'to status', status);
+
+      let updatedCount = 0;
+
+      // Update task status in my bids
+      state.myBids.data = state.myBids.data.map(bid => {
+        if (bid.task && String(bid.task._id) === String(taskId)) {
+          console.log('[updateTaskInBids] Updating myBid', bid._id, 'task status from', bid.task.status, 'to', status);
+          updatedCount++;
+          return { ...bid, task: { ...bid.task, status } };
+        }
+        return bid;
+      });
+
+      // Update task status in task bids
+      state.taskBids.data = state.taskBids.data.map(bid => {
+        if (bid.task && String(bid.task._id) === String(taskId)) {
+          console.log('[updateTaskInBids] Updating taskBid', bid._id, 'task status from', bid.task.status, 'to', status);
+          updatedCount++;
+          return { ...bid, task: { ...bid.task, status } };
+        }
+        return bid;
+      });
+
+      // Update task status in bid detail
+      if (state.bidDetail.data && state.bidDetail.data.task && String(state.bidDetail.data.task._id) === String(taskId)) {
+        console.log('[updateTaskInBids] Updating bidDetail task status');
+        state.bidDetail.data.task = { ...state.bidDetail.data.task, status };
+        updatedCount++;
+      }
+
+      console.log('[updateTaskInBids] Updated', updatedCount, 'items');
     },
     addBidToTask: (state, action) => {
       // Add new bid to task bids list
@@ -255,7 +290,7 @@ const bidsSlice = createSlice({
 });
 
 // Export actions and reducer
-export const { resetBidDetail, resetBidErrors, updateBidFromSocket, addBidToTask } = bidsSlice.actions;
+export const { resetBidDetail, resetBidErrors, updateBidFromSocket, updateTaskInBids, addBidToTask } = bidsSlice.actions;
 
 // Selectors
 export const selectMyBids = (state) => state.bids.myBids.data;

@@ -15,6 +15,7 @@ const TaskDetailPage = () => {
   const location = useLocation();
   const { currentUser, isTasker, isCustomer } = useAuth();
   const { taskDetail, taskDetailLoading, getTaskDetail } = useTasks();
+  const { getTaskBids, taskBids } = useBids();
   
   const [showBidForm, setShowBidForm] = useState(false);
   const [bidData, setBidData] = useState({
@@ -27,6 +28,14 @@ const TaskDetailPage = () => {
   const [showChat, setShowChat] = useState(false);
 
   const taskStatus = useMemo(() => taskDetail?.status || 'unknown', [taskDetail?.status]);
+
+  // Use real-time bids from useBids hook, fallback to taskDetail bids
+  const displayBids = useMemo(() => {
+    if (taskBids && taskBids.length > 0) {
+      return taskBids;
+    }
+    return taskDetail?.bids || [];
+  }, [taskBids, taskDetail?.bids]);
   
   const isTaskOpen = useMemo(() => taskStatus === 'open', [taskStatus]);
   
@@ -66,6 +75,13 @@ const TaskDetailPage = () => {
       console.log('Can see bids:', canSeeBids);
     }
   }, [taskDetail, canSeeBids]);
+
+  // Fetch task bids for real-time updates
+  useEffect(() => {
+    if (taskId && canSeeBids) {
+      getTaskBids(taskId);
+    }
+  }, [taskId, canSeeBids, getTaskBids]);
 
   // Reset bid form when closing
   useEffect(() => {
@@ -718,17 +734,17 @@ const TaskDetailPage = () => {
               </div>
             )}
             {/* Bids Section - Visible to task owner, admin, or taskers for open tasks */}
-            {(canSeeBids || (isTasker && task?.status === 'open')) && task?.bids && task?.bids.length > 0 && (
+            {(canSeeBids || (isTasker && task?.status === 'open')) && displayBids && displayBids.length > 0 && (
               <div className="bg-white rounded-lg shadow-sm p-6">
                 <h2 className="text-xl font-medium text-gray-800 mb-4">
-                  {isTasker && !canSeeBids ? 'Other Bids' : `Bids (${task?.bids.length})`}
+                  {isTasker && !canSeeBids ? 'Other Bids' : `Bids (${displayBids.length})`}
                 </h2>
-                
-                {task?.bids.length === 0 ? (
+
+                {displayBids.length === 0 ? (
                   <p className="text-gray-600">{isTasker && !canSeeBids ? 'No other bids have been placed on this task yet.' : 'No bids have been placed on this task yet.'}</p>
                 ) : (
                   <div className="space-y-4">
-                    {task?.bids
+                    {displayBids
                       .filter(bid => isTasker && !canSeeBids ? bid.tasker._id !== currentUser._id : true)
                       .map(bid => (
                     <div key={bid._id} className="border rounded-lg p-4">

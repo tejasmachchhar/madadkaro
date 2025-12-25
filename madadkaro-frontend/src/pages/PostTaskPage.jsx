@@ -5,7 +5,7 @@ import api from '../services/api';
 import { toast } from 'react-toastify';
 import CategorySelect from '../components/CategorySelect';
 import GoogleMapPicker from '../components/GoogleMapPicker';
-import { getLocationDataFromCoordinates, getCurrentPosition } from '../utils/locationUtils';
+import { getLocationDataFromCoordinates, getCurrentPosition, getCoordinatesFromAddress } from '../utils/locationUtils';
 
 const PostTaskPage = () => {
   const { currentUser } = useAuth();
@@ -200,6 +200,9 @@ const PostTaskPage = () => {
     } else {
       const selected = savedAddresses.find(addr => addr._id === addressId);
       if (selected) {
+        // Construct full address string for geocoding
+        const fullAddress = `${selected.houseNoBuilding}, ${selected.areaColony}${selected.landmark ? `, ${selected.landmark}` : ''}, ${selected.city}, ${selected.state} - ${selected.pincode}`;
+
         setFormData(prev => ({
           ...prev,
           pincode: selected.pincode,
@@ -218,6 +221,25 @@ const PostTaskPage = () => {
           city: selected.city,
           state: selected.state
         });
+
+        // Try to geocode the address to get coordinates
+        const geocodeAddress = async () => {
+          try {
+            const coordinates = await getCoordinatesFromAddress(fullAddress);
+            if (coordinates) {
+              setFormData(prev => ({
+                ...prev,
+                latitude: coordinates.lat.toString(),
+                longitude: coordinates.lng.toString(),
+              }));
+            }
+          } catch (error) {
+            console.warn('Failed to geocode saved address:', error);
+            // Continue without coordinates - the sparse index will handle this
+          }
+        };
+        geocodeAddress();
+
         // Reset to custom mode when selecting a saved address
         setUseLocationBasedAddress(false);
       }

@@ -165,15 +165,31 @@ export const useTasks = () => {
     
     // Listen for task status changes
     const unsubTaskStatus = realtimeService.subscribeToUserTasks((data) => {
+      console.log('[useTasks] Received task_status_changed event:', data);
+
       // Re-fetch the task detail if it's the current task being viewed
       if (taskDetail && taskDetail._id === data.taskId) {
+        console.log('[useTasks] Refetching task detail for current task');
         dispatch(fetchTaskDetail({ taskId: data.taskId }));
       }
-      
+
+      // Update task in customer tasks if it exists
+      if (customerTasks && customerTasks.length > 0) {
+        const task = customerTasks.find(t => t._id === data.taskId);
+        if (task) {
+          console.log('[useTasks] Updating task in customerTasks:', task._id, 'status:', data.status);
+          // Optimistically update the task in the customer tasks list
+          dispatch(updateTaskInList({ ...task, status: data.status }));
+        } else {
+          console.log('[useTasks] Task not found in customerTasks:', data.taskId);
+        }
+      }
+
       // Also refetch available tasks to keep them in sync
       if (availableTasks && availableTasks.length > 0) {
         const task = availableTasks.find(t => t._id === data.taskId);
         if (task) {
+          console.log('[useTasks] Updating task in availableTasks:', task._id);
           // Optimistically update the task in the list
           dispatch(updateTaskInList({ ...task, status: data.status }));
         }

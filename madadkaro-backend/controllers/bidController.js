@@ -309,13 +309,59 @@ const acceptBid = asyncHandler(async (req, res) => {
     task.assignedTo = bid.tasker._id;
     await task.save();
 
+    // Get all other bids to send rejection notifications
+    const otherBids = await Bid.find({
+      task: task._id,
+      _id: { $ne: bid._id },
+      status: 'pending'
+    }).populate('tasker', 'name');
+
     // Reject all other bids
     await Bid.updateMany(
       { task: task._id, _id: { $ne: bid._id } },
       { status: 'rejected' }
     );
 
-    // Create notification for the tasker
+    // Send rejection notifications to other taskers
+    for (const rejectedBid of otherBids) {
+      const rejectionNotification = new Notification({
+        recipient: rejectedBid.tasker._id,
+        sender: req.user._id,
+        type: 'bid_rejected',
+        title: 'Bid Rejected',
+        message: `Your bid of ₹${rejectedBid.amount} on task "${task.title}" has been rejected because another bid was accepted.`,
+        task: task._id,
+        bid: rejectedBid._id,
+        data: {
+          amount: rejectedBid.amount,
+          customerName: req.user.name,
+          taskTitle: task.title,
+          reason: 'Another bid was accepted',
+          status: 'rejected'
+        },
+      });
+      await rejectionNotification.save();
+
+      // Send real-time notification for rejected bids
+      const rejectedTaskerSocketId = userSockets.get(rejectedBid.tasker._id.toString());
+      if (rejectedTaskerSocketId) {
+        io.to(rejectedTaskerSocketId).emit('notification', {
+          type: 'bid_rejected',
+          message: `Your bid of ₹${rejectedBid.amount} on task "${task.title}" has been rejected because another bid was accepted.`,
+          data: {
+            taskId: task._id,
+            bidId: rejectedBid._id,
+            status: 'rejected',
+            amount: rejectedBid.amount,
+            customerName: req.user.name,
+            taskTitle: task.title,
+            reason: 'Another bid was accepted'
+          },
+        });
+      }
+    }
+
+    // Create notification for the tasker whose bid was accepted
     const notification = new Notification({
       recipient: bid.tasker._id,
       sender: req.user._id,
@@ -328,18 +374,39 @@ const acceptBid = asyncHandler(async (req, res) => {
         amount: bid.amount,
         customerName: req.user.name,
         taskTitle: task.title,
+        status: 'accepted'
       },
     });
 
     await notification.save();
+
+    // Create notification for the customer about task assignment
+    const taskAssignedNotification = new Notification({
+      recipient: req.user._id,
+      sender: req.user._id, // Self-notification
+      type: 'task_assigned',
+      title: 'Task Assigned',
+      message: `Your task "${task.title}" has been assigned to ${bid.tasker.name}.`,
+      task: task._id,
+      bid: bid._id,
+      data: {
+        taskerId: bid.tasker._id,
+        taskerName: bid.tasker.name,
+        taskTitle: task.title,
+        bidAmount: bid.amount,
+        status: 'assigned'
+      },
+    });
+
+    await taskAssignedNotification.save();
 
     // Send real-time notification if socket is available
     const io = req.app.get('io');
     const userSockets = req.app.get('userSockets');
 
     if (io && userSockets) {
+      // Send notification to the accepted tasker
       const taskerSocketId = userSockets.get(bid.tasker._id.toString());
-
       if (taskerSocketId) {
         io.to(taskerSocketId).emit('notification', {
           type: 'bid_accepted',
@@ -347,9 +414,40 @@ const acceptBid = asyncHandler(async (req, res) => {
           data: {
             taskId: task._id,
             bidId: bid._id,
+            status: 'accepted',
             amount: bid.amount,
             customerName: req.user.name,
             taskTitle: task.title,
+          },
+        });
+
+        // Also send task assignment notification to tasker
+        io.to(taskerSocketId).emit('notification', {
+          type: 'task_assigned',
+          message: `Task "${task.title}" has been assigned to you.`,
+          data: {
+            taskId: task._id,
+            status: 'assigned',
+            customerName: req.user.name,
+            taskTitle: task.title,
+            bidAmount: bid.amount
+          },
+        });
+      }
+
+      // Send task assignment notification to customer
+      const customerSocketId = userSockets.get(req.user._id.toString());
+      if (customerSocketId) {
+        io.to(customerSocketId).emit('notification', {
+          type: 'task_assigned',
+          message: `Your task "${task.title}" has been assigned to ${bid.tasker.name}.`,
+          data: {
+            taskId: task._id,
+            taskerId: bid.tasker._id,
+            taskerName: bid.tasker.name,
+            taskTitle: task.title,
+            bidAmount: bid.amount,
+            status: 'assigned'
           },
         });
       }
@@ -428,6 +526,7 @@ const rejectBid = asyncHandler(async (req, res) => {
           data: {
             taskId: task._id,
             bidId: bid._id,
+            status: 'rejected',
             amount: bid.amount,
             customerName: req.user.name,
             taskTitle: task.title,

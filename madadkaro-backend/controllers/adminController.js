@@ -15,7 +15,7 @@ const getStats = asyncHandler(async (req, res) => {
   
   const totalTasks = await Task.countDocuments();
   const openTasks = await Task.countDocuments({ status: 'open' });
-  const inProgressTasks = await Task.countDocuments({ status: 'in-progress' });
+  const inProgressTasks = await Task.countDocuments({ status: 'inProgress' });
   const completedTasks = await Task.countDocuments({ status: 'completed' });
   
   const totalBids = await Bid.countDocuments();

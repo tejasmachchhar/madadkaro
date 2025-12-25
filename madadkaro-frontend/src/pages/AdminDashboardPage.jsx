@@ -13,6 +13,7 @@ const AdminDashboardPage = () => {
     taskerCount: 0,
     totalTasks: 0,
     openTasks: 0,
+    inProgressTasks: 0,
     completedTasks: 0,
     totalBids: 0,
     totalEarnings: 0
@@ -149,6 +150,9 @@ const AdminDashboardPage = () => {
                         {stats.openTasks} Open
                       </p>
                       <p className="text-xs text-gray-500">
+                        {stats.inProgressTasks} In Progress
+                      </p>
+                      <p className="text-xs text-gray-500">
                         {stats.completedTasks} Completed
                       </p>
                     </div>
@@ -272,7 +276,7 @@ const AdminDashboardPage = () => {
                             <span className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${
                               task.status === 'open' ? 'bg-green-100 text-green-800' :
                               task.status === 'assigned' ? 'bg-blue-100 text-blue-800' :
-                              task.status === 'in-progress' ? 'bg-yellow-100 text-yellow-800' :
+                              task.status === 'inProgress' ? 'bg-yellow-100 text-yellow-800' :
                               task.status === 'completed' ? 'bg-purple-100 text-purple-800' :
                               'bg-red-100 text-red-800'
                             }`}>

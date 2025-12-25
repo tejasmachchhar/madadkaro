@@ -128,6 +128,10 @@ const taskSchema = mongoose.Schema(
   }
 );
 
-taskSchema.index({ location: '2dsphere' });
+taskSchema.index({ location: '2dsphere' }, { sparse: true });
+
+// Script to fix existing index (run this once in MongoDB shell if needed):
+// db.tasks.dropIndex({ location: '2dsphere' })
+// Then restart the server to recreate the sparse index
 
 module.exports = mongoose.model('Task', taskSchema);
