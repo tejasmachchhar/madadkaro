@@ -1,6 +1,6 @@
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import { AuthProvider } from './context/AuthContext';
-import usePushNotifications from './hooks/usePushNotifications';
+import { useEffect } from 'react';
 
 // Layout
 import Layout from './components/Layout';
@@ -32,7 +32,13 @@ import TaskerProfilePage from './pages/TaskerProfilePage';
 
 function App() {
   // Initialize push notifications
-  usePushNotifications();
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      import('./hooks/usePushNotifications').then((module) => {
+        module.default();
+      });
+    }
+  }, []);
 
   return (
     <AuthProvider>
