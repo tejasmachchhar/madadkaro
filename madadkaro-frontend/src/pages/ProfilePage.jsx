@@ -4,6 +4,7 @@ import { useReviews } from '../hooks/useReviews';
 import { toast } from 'react-toastify';
 import TaskerRatingSummary from '../components/TaskerRatingSummary';
 import TaskerReview from '../components/TaskerReview';
+import AddressManager from '../components/AddressManager';
 
 const ProfilePage = () => {
   const { currentUser, updateProfile } = useAuth();
@@ -115,11 +116,11 @@ const ProfilePage = () => {
           )}
         </div>
 
-        {/* Tabs for taskers */}
-        {currentUser && currentUser.role === 'tasker' && (
+        {/* Tabs for taskers and customers */}
+        {currentUser && (
           <div className="mb-6">
             <div className="border-b border-gray-200">
-              <nav className="flex -mb-px">
+              <nav className="flex -mb-px flex-wrap">
                 <button
                   className={`py-4 px-6 font-medium text-sm focus:outline-none ${
                     activeTab === 'profile'
@@ -133,14 +134,27 @@ const ProfilePage = () => {
                 
                 <button
                   className={`py-4 px-6 font-medium text-sm focus:outline-none ${
-                    activeTab === 'reviews'
+                    activeTab === 'addresses'
                       ? 'text-blue-600 border-b-2 border-blue-600'
                       : 'text-gray-500 hover:text-gray-700'
                   }`}
-                  onClick={() => handleTabChange('reviews')}
+                  onClick={() => handleTabChange('addresses')}
                 >
-                  Reviews & Ratings
+                  Addresses
                 </button>
+                
+                {currentUser.role === 'tasker' && (
+                  <button
+                    className={`py-4 px-6 font-medium text-sm focus:outline-none ${
+                      activeTab === 'reviews'
+                        ? 'text-blue-600 border-b-2 border-blue-600'
+                        : 'text-gray-500 hover:text-gray-700'
+                    }`}
+                    onClick={() => handleTabChange('reviews')}
+                  >
+                    Reviews & Ratings
+                  </button>
+                )}
               </nav>
             </div>
           </div>
@@ -332,6 +346,13 @@ const ProfilePage = () => {
                 )}
               </div>
             )}
+          </div>
+        )}
+
+        {/* Addresses Tab */}
+        {activeTab === 'addresses' && (
+          <div className="bg-white rounded-lg shadow-md p-6">
+            <AddressManager />
           </div>
         )}
 

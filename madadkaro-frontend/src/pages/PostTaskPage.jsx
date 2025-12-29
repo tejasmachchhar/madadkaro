@@ -5,6 +5,7 @@ import api from '../services/api';
 import { toast } from 'react-toastify';
 import CategorySelect from '../components/CategorySelect';
 import GoogleMapPicker from '../components/GoogleMapPicker';
+import AddressManager from '../components/AddressManager';
 import { getLocationDataFromCoordinates, getCurrentPosition, getCoordinatesFromAddress } from '../utils/locationUtils';
 
 const PostTaskPage = () => {
@@ -14,6 +15,7 @@ const PostTaskPage = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [isLoadingAddresses, setIsLoadingAddresses] = useState(false);
   const [isLoadingLocation, setIsLoadingLocation] = useState(false);
+  const [showAddressManager, setShowAddressManager] = useState(false);
   const [savedAddresses, setSavedAddresses] = useState([]);
   const [selectedAddressId, setSelectedAddressId] = useState(''); // To store _id of selected address or 'new'
   const [useLocationBasedAddress, setUseLocationBasedAddress] = useState(true); // Toggle for location-based vs custom address (default: true for auto-fill)
@@ -243,6 +245,24 @@ const PostTaskPage = () => {
         // Reset to custom mode when selecting a saved address
         setUseLocationBasedAddress(false);
       }
+    }
+  };
+
+  const handleAddressManagerClose = async () => {
+    setShowAddressManager(false);
+    // Refresh addresses after manager closes
+    await fetchAddresses();
+  };
+
+  const fetchAddresses = async () => {
+    setIsLoadingAddresses(true);
+    try {
+      const response = await api.get('/users/profile/addresses');
+      setSavedAddresses(response.data || []);
+    } catch (error) {
+      console.error('Failed to fetch addresses:', error);
+    } finally {
+      setIsLoadingAddresses(false);
     }
   };
 
@@ -529,7 +549,16 @@ const PostTaskPage = () => {
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               {/* New Address Fields */}
               <div className="col-span-1 md:col-span-2">
-                <h3 className="text-lg font-medium text-gray-800 mb-3">Address Details</h3>
+                <div className="flex justify-between items-center mb-3">
+                  <h3 className="text-lg font-medium text-gray-800">Address Details</h3>
+                  <button
+                    type="button"
+                    onClick={() => setShowAddressManager(true)}
+                    className="text-blue-600 hover:text-blue-800 font-medium text-sm underline"
+                  >
+                    Manage Addresses
+                  </button>
+                </div>
                 {isLoadingAddresses && <p>Loading addresses...</p>}
                 {!isLoadingAddresses && savedAddresses.length > 0 && (
                   <div className="mb-4">
@@ -869,6 +898,26 @@ const PostTaskPage = () => {
             </div>
           </div>
         </form>
+
+        {/* Address Manager Modal */}
+        {showAddressManager && (
+          <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+            <div className="bg-white rounded-lg max-w-2xl w-full max-h-96 overflow-y-auto">
+              <div className="flex justify-between items-center p-6 border-b">
+                <h2 className="text-xl font-bold text-gray-800">Manage Your Addresses</h2>
+                <button
+                  onClick={() => handleAddressManagerClose()}
+                  className="text-gray-500 hover:text-gray-700 text-2xl"
+                >
+                  ×
+                </button>
+              </div>
+              <div className="p-6">
+                <AddressManager />
+              </div>
+            </div>
+          </div>
+        )}
       </div>
     </div>
   );
