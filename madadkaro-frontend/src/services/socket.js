@@ -1,8 +1,15 @@
 import io from 'socket.io-client';
 import { toast } from 'react-toastify';
 
-// Hardcode API URL for now
-const API_URL = 'http://localhost:5000';
+// Get API URL from environment or use production URL
+const getApiUrl = () => {
+  if (typeof window !== 'undefined' && window.location.hostname === 'localhost') {
+    return 'http://localhost:5000';
+  }
+  return import.meta.env.VITE_API_URL || 'https://api.madadkaro.com';
+};
+
+const API_URL = getApiUrl();
 
 let socket = null;
 

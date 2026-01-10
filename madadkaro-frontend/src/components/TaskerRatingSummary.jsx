@@ -1,5 +1,3 @@
-import React from 'react';
-
 const TaskerRatingSummary = ({ ratings }) => {
   // Calculate average rating
   const calculateAverage = () => {

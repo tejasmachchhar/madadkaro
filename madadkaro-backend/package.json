@@ -7,7 +7,9 @@
     "start": "node server.js",
     "dev": "nodemon server.js",
     "data:import-categories": "node utils/seedCategories.js",
-    "data:destroy-categories": "node utils/seedCategories.js -d"
+    "data:destroy-categories": "node utils/seedCategories.js -d",
+    "db:export": "node export-mongodb.js",
+    "db:import-atlas": "node import-mongodb.js"
   },
   "keywords": [],
   "author": "",

@@ -1,0 +1,50 @@
+[
+  {
+    "_id": "694d3a594c0da22ddb0fb5de",
+    "task": "694d37a34c0da22ddb0fb17f",
+    "sender": "690904297571a6d3ae258fcb",
+    "receiver": "6908f4797571a6d3ae2588a0",
+    "content": "hi",
+    "isRead": true,
+    "attachments": [],
+    "createdAt": "2025-12-25T13:21:29.634Z",
+    "updatedAt": "2025-12-25T13:21:42.281Z",
+    "__v": 0
+  },
+  {
+    "_id": "694d3a6a4c0da22ddb0fb61e",
+    "task": "694d37a34c0da22ddb0fb17f",
+    "sender": "6908f4797571a6d3ae2588a0",
+    "receiver": "690904297571a6d3ae258fcb",
+    "content": "yes",
+    "isRead": false,
+    "attachments": [],
+    "createdAt": "2025-12-25T13:21:46.855Z",
+    "updatedAt": "2025-12-25T13:21:46.855Z",
+    "__v": 0
+  },
+  {
+    "_id": "694d3a7d4c0da22ddb0fb63a",
+    "task": "694d37a34c0da22ddb0fb17f",
+    "sender": "690904297571a6d3ae258fcb",
+    "receiver": "6908f4797571a6d3ae2588a0",
+    "content": "99 pl",
+    "isRead": false,
+    "attachments": [],
+    "createdAt": "2025-12-25T13:22:05.516Z",
+    "updatedAt": "2025-12-25T13:22:05.516Z",
+    "__v": 0
+  },
+  {
+    "_id": "694d3a834c0da22ddb0fb644",
+    "task": "694d37a34c0da22ddb0fb17f",
+    "sender": "6908f4797571a6d3ae2588a0",
+    "receiver": "690904297571a6d3ae258fcb",
+    "content": "ok",
+    "isRead": false,
+    "attachments": [],
+    "createdAt": "2025-12-25T13:22:11.689Z",
+    "updatedAt": "2025-12-25T13:22:11.689Z",
+    "__v": 0
+  }
+]

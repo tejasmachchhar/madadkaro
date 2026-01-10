@@ -1,0 +1,22 @@
+[
+  {
+    "_id": "6908f6bf7571a6d3ae2589d0",
+    "platformFeePercentage": 5,
+    "trustAndSupportFee": 2,
+    "commissionPercentage": 15,
+    "lastUpdatedBy": "6908f5d17571a6d3ae258914",
+    "createdAt": "2025-11-03T18:38:55.929Z",
+    "updatedAt": "2025-11-03T18:38:55.929Z",
+    "__v": 0
+  },
+  {
+    "_id": "69090ef6ad7433a495e570c8",
+    "platformFeePercentage": 0,
+    "trustAndSupportFee": 0,
+    "commissionPercentage": 0,
+    "lastUpdatedBy": "6908f5d17571a6d3ae258914",
+    "createdAt": "2025-11-03T20:22:14.885Z",
+    "updatedAt": "2025-11-03T20:22:14.885Z",
+    "__v": 0
+  }
+]

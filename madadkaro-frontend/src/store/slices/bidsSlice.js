@@ -58,7 +58,7 @@ export const fetchTaskBids = createAsyncThunk(
   'bids/fetchTaskBids',
   async (taskId, { rejectWithValue }) => {
     try {
-      const { data } = await api.get(`/tasks/${taskId}/bids`);
+      const { data } = await api.get(`/bids/task/${taskId}`);
       return data;
     } catch (error) {
       return rejectWithValue(
@@ -74,7 +74,7 @@ export const createBid = createAsyncThunk(
   'bids/createBid',
   async ({ taskId, bidData }, { rejectWithValue }) => {
     try {
-      const { data } = await api.post(`/tasks/${taskId}/bids`, bidData);
+      const { data } = await api.post(`/bids`, { ...bidData, task: taskId });
       return data;
     } catch (error) {
       return rejectWithValue(

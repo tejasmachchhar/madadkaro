@@ -1,8 +1,17 @@
 import axios from 'axios';
 
+// Get API base URL from environment or use production URL
+const getApiUrl = () => {
+  if (typeof window !== 'undefined' && window.location.hostname === 'localhost') {
+    return 'http://localhost:5000/api';
+  }
+  // Production URLs - update based on your deployment
+  return import.meta.env.VITE_API_URL || 'https://api.madadkaro.com/api';
+};
+
 // Create an instance of axios
 const api = axios.create({
-  baseURL: 'http://localhost:5000/api',
+  baseURL: getApiUrl(),
   headers: {
     'Content-Type': 'application/json',
   },

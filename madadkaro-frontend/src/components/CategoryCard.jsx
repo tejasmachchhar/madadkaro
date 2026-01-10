@@ -1,5 +1,4 @@
 import { Link } from 'react-router-dom';
-import PropTypes from 'prop-types';
 
 const CategoryCard = ({ category, locationData, isPopular = false, userRole = 'tasker' }) => { // Added userRole prop with default
   const { _id, name, icon, priceRange, slug } = category; // Added slug for consistency if needed
@@ -70,26 +69,6 @@ const CategoryCard = ({ category, locationData, isPopular = false, userRole = 't
       </div>
     </Link>
   );
-};
-
-CategoryCard.propTypes = {
-  category: PropTypes.shape({
-    _id: PropTypes.string.isRequired, // Changed from id to _id to match data
-    name: PropTypes.string.isRequired,
-    icon: PropTypes.string.isRequired,
-    slug: PropTypes.string, // Added slug
-    priceRange: PropTypes.shape({
-      min: PropTypes.number.isRequired,
-      max: PropTypes.number.isRequired
-    })
-  }).isRequired,
-  locationData: PropTypes.shape({
-    address: PropTypes.string.isRequired,
-    lat: PropTypes.number,
-    lng: PropTypes.number
-  }),
-  isPopular: PropTypes.bool,
-  userRole: PropTypes.oneOf(['customer', 'tasker']) // Added userRole to propTypes
 };
 
 export default CategoryCard;

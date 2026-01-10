@@ -1,0 +1,642 @@
+[
+  {
+    "_id": "6909074c4068157ba630c107",
+    "slug": "cleaning",
+    "__v": 0,
+    "createdAt": "2025-11-03T19:49:32.282Z",
+    "description": "Home and office cleaning services",
+    "icon": "🧹",
+    "isActive": true,
+    "name": "Cleaning",
+    "parentCategory": null,
+    "priceRange": {
+      "min": 200,
+      "max": 800
+    },
+    "updatedAt": "2025-11-03T19:49:32.282Z"
+  },
+  {
+    "_id": "6909074c4068157ba630c108",
+    "slug": "cleaning-house-cleaning",
+    "__v": 0,
+    "createdAt": "2025-11-03T19:49:32.373Z",
+    "description": "General house cleaning services",
+    "icon": "🏠",
+    "isActive": true,
+    "name": "Cleaning - House Cleaning",
+    "parentCategory": "6909074c4068157ba630c107",
+    "priceRange": {
+      "min": 200,
+      "max": 500
+    },
+    "updatedAt": "2025-11-03T19:49:32.373Z"
+  },
+  {
+    "_id": "6909074c4068157ba630c109",
+    "slug": "cleaning-deep-cleaning",
+    "__v": 0,
+    "createdAt": "2025-11-03T19:49:32.387Z",
+    "description": "Thorough cleaning of specific areas",
+    "icon": "✨",
+    "isActive": true,
+    "name": "Cleaning - Deep Cleaning",
+    "parentCategory": "6909074c4068157ba630c107",
+    "priceRange": {
+      "min": 400,
+      "max": 800
+    },
+    "updatedAt": "2025-11-03T19:49:32.387Z"
+  },
+  {
+    "_id": "6909074c4068157ba630c10a",
+    "slug": "cleaning-window-cleaning",
+    "__v": 0,
+    "createdAt": "2025-11-03T19:49:32.397Z",
+    "description": "Interior and exterior window cleaning",
+    "icon": "🪟",
+    "isActive": true,
+    "name": "Cleaning - Window Cleaning",
+    "parentCategory": "6909074c4068157ba630c107",
+    "priceRange": {
+      "min": 300,
+      "max": 600
+    },
+    "updatedAt": "2025-11-03T19:49:32.397Z"
+  },
+  {
+    "_id": "6909074c4068157ba630c10b",
+    "slug": "cleaning-carpet-cleaning",
+    "__v": 0,
+    "createdAt": "2025-11-03T19:49:32.404Z",
+    "description": "Professional carpet cleaning services",
+    "icon": "🧶",
+    "isActive": true,
+    "name": "Cleaning - Carpet Cleaning",
+    "parentCategory": "6909074c4068157ba630c107",
+    "priceRange": {
+      "min": 350,
+      "max": 700
+    },
+    "updatedAt": "2025-11-03T19:49:32.404Z"
+  },
+  {
+    "_id": "6909074c4068157ba630c10c",
+    "slug": "handyman",
+    "__v": 0,
+    "createdAt": "2025-11-03T19:49:32.412Z",
+    "description": "General repair and maintenance services",
+    "icon": "🔧",
+    "isActive": true,
+    "name": "Handyman",
+    "parentCategory": null,
+    "priceRange": {
+      "min": 300,
+      "max": 1500
+    },
+    "updatedAt": "2025-11-03T19:49:32.412Z"
+  },
+  {
+    "_id": "6909074c4068157ba630c10d",
+    "slug": "handyman-plumbing",
+    "__v": 0,
+    "createdAt": "2025-11-03T19:49:32.423Z",
+    "description": "Fixing leaks, installations and repairs",
+    "icon": "🚰",
+    "isActive": true,
+    "name": "Handyman - Plumbing",
+    "parentCategory": "6909074c4068157ba630c10c",
+    "priceRange": {
+      "min": 300,
+      "max": 800
+    },
+    "updatedAt": "2025-11-03T19:49:32.423Z"
+  },
+  {
+    "_id": "6909074c4068157ba630c10e",
+    "slug": "handyman-electrical",
+    "__v": 0,
+    "createdAt": "2025-11-03T19:49:32.438Z",
+    "description": "Wiring, fixtures and electrical repairs",
+    "icon": "⚡",
+    "isActive": true,
+    "name": "Handyman - Electrical",
+    "parentCategory": "6909074c4068157ba630c10c",
+    "priceRange": {
+      "min": 400,
+      "max": 1200
+    },
+    "updatedAt": "2025-11-03T19:49:32.438Z"
+  },
+  {
+    "_id": "6909074c4068157ba630c10f",
+    "slug": "handyman-carpentry",
+    "__v": 0,
+    "createdAt": "2025-11-03T19:49:32.449Z",
+    "description": "Woodwork and furniture assembly",
+    "icon": "🪚",
+    "isActive": true,
+    "name": "Handyman - Carpentry",
+    "parentCategory": "6909074c4068157ba630c10c",
+    "priceRange": {
+      "min": 350,
+      "max": 1500
+    },
+    "updatedAt": "2025-11-03T19:49:32.449Z"
+  },
+  {
+    "_id": "6909074c4068157ba630c110",
+    "slug": "handyman-painting",
+    "__v": 0,
+    "createdAt": "2025-11-03T19:49:32.463Z",
+    "description": "Interior and exterior painting services",
+    "icon": "🎨",
+    "isActive": true,
+    "name": "Handyman - Painting",
+    "parentCategory": "6909074c4068157ba630c10c",
+    "priceRange": {
+      "min": 500,
+      "max": 1500
+    },
+    "updatedAt": "2025-11-03T19:49:32.463Z"
+  },
+  {
+    "_id": "6909074c4068157ba630c111",
+    "slug": "moving",
+    "__v": 0,
+    "createdAt": "2025-11-03T19:49:32.469Z",
+    "description": "Help with moving and transportation",
+    "icon": "📦",
+    "isActive": true,
+    "name": "Moving",
+    "parentCategory": null,
+    "priceRange": {
+      "min": 500,
+      "max": 3000
+    },
+    "updatedAt": "2025-11-03T19:49:32.469Z"
+  },
+  {
+    "_id": "6909074c4068157ba630c112",
+    "slug": "moving-furniture-moving",
+    "__v": 0,
+    "createdAt": "2025-11-03T19:49:32.476Z",
+    "description": "Moving furniture within home or to new location",
+    "icon": "🪑",
+    "isActive": true,
+    "name": "Moving - Furniture Moving",
+    "parentCategory": "6909074c4068157ba630c111",
+    "priceRange": {
+      "min": 500,
+      "max": 1500
+    },
+    "updatedAt": "2025-11-03T19:49:32.476Z"
+  },
+  {
+    "_id": "6909074c4068157ba630c113",
+    "slug": "moving-home-shifting",
+    "__v": 0,
+    "createdAt": "2025-11-03T19:49:32.483Z",
+    "description": "Complete home relocation services",
+    "icon": "🏠",
+    "isActive": true,
+    "name": "Moving - Home Shifting",
+    "parentCategory": "6909074c4068157ba630c111",
+    "priceRange": {
+      "min": 1000,
+      "max": 3000
+    },
+    "updatedAt": "2025-11-03T19:49:32.483Z"
+  },
+  {
+    "_id": "6909074c4068157ba630c114",
+    "slug": "moving-packing-services",
+    "__v": 0,
+    "createdAt": "2025-11-03T19:49:32.491Z",
+    "description": "Help with packing belongings securely",
+    "icon": "📦",
+    "isActive": true,
+    "name": "Moving - Packing Services",
+    "parentCategory": "6909074c4068157ba630c111",
+    "priceRange": {
+      "min": 300,
+      "max": 1000
+    },
+    "updatedAt": "2025-11-03T19:49:32.491Z"
+  },
+  {
+    "_id": "6909074c4068157ba630c115",
+    "slug": "moving-vehicle-transport",
+    "__v": 0,
+    "createdAt": "2025-11-03T19:49:32.499Z",
+    "description": "Transport vehicles to new locations",
+    "icon": "🚗",
+    "isActive": true,
+    "name": "Moving - Vehicle Transport",
+    "parentCategory": "6909074c4068157ba630c111",
+    "priceRange": {
+      "min": 800,
+      "max": 2500
+    },
+    "updatedAt": "2025-11-03T19:49:32.499Z"
+  },
+  {
+    "_id": "6909074c4068157ba630c116",
+    "slug": "delivery",
+    "__v": 0,
+    "createdAt": "2025-11-03T19:49:32.506Z",
+    "description": "Delivery and courier services",
+    "icon": "🚚",
+    "isActive": true,
+    "name": "Delivery",
+    "parentCategory": null,
+    "priceRange": {
+      "min": 100,
+      "max": 600
+    },
+    "updatedAt": "2025-11-03T19:49:32.506Z"
+  },
+  {
+    "_id": "6909074c4068157ba630c117",
+    "slug": "delivery-food-delivery",
+    "__v": 0,
+    "createdAt": "2025-11-03T19:49:32.514Z",
+    "description": "Deliver food from restaurants or groceries",
+    "icon": "🍔",
+    "isActive": true,
+    "name": "Delivery - Food Delivery",
+    "parentCategory": "6909074c4068157ba630c116",
+    "priceRange": {
+      "min": 100,
+      "max": 300
+    },
+    "updatedAt": "2025-11-03T19:49:32.514Z"
+  },
+  {
+    "_id": "6909074c4068157ba630c118",
+    "slug": "delivery-package-delivery",
+    "__v": 0,
+    "createdAt": "2025-11-03T19:49:32.519Z",
+    "description": "Transport packages across town",
+    "icon": "📦",
+    "isActive": true,
+    "name": "Delivery - Package Delivery",
+    "parentCategory": "6909074c4068157ba630c116",
+    "priceRange": {
+      "min": 150,
+      "max": 400
+    },
+    "updatedAt": "2025-11-03T19:49:32.519Z"
+  },
+  {
+    "_id": "6909074c4068157ba630c119",
+    "slug": "delivery-grocery-delivery",
+    "__v": 0,
+    "createdAt": "2025-11-03T19:49:32.525Z",
+    "description": "Buy and deliver groceries",
+    "icon": "🛒",
+    "isActive": true,
+    "name": "Delivery - Grocery Delivery",
+    "parentCategory": "6909074c4068157ba630c116",
+    "priceRange": {
+      "min": 200,
+      "max": 500
+    },
+    "updatedAt": "2025-11-03T19:49:32.525Z"
+  },
+  {
+    "_id": "6909074c4068157ba630c11a",
+    "slug": "delivery-medicine-delivery",
+    "__v": 0,
+    "createdAt": "2025-11-03T19:49:32.532Z",
+    "description": "Pick up and deliver medicines",
+    "icon": "💊",
+    "isActive": true,
+    "name": "Delivery - Medicine Delivery",
+    "parentCategory": "6909074c4068157ba630c116",
+    "priceRange": {
+      "min": 100,
+      "max": 300
+    },
+    "updatedAt": "2025-11-03T19:49:32.532Z"
+  },
+  {
+    "_id": "6909074c4068157ba630c11b",
+    "slug": "gardening",
+    "__v": 0,
+    "createdAt": "2025-11-03T19:49:32.537Z",
+    "description": "Garden maintenance and landscaping",
+    "icon": "🌱",
+    "isActive": true,
+    "name": "Gardening",
+    "parentCategory": null,
+    "priceRange": {
+      "min": 250,
+      "max": 1200
+    },
+    "updatedAt": "2025-11-03T19:49:32.537Z"
+  },
+  {
+    "_id": "6909074c4068157ba630c11c",
+    "slug": "gardening-lawn-mowing",
+    "__v": 0,
+    "createdAt": "2025-11-03T19:49:32.545Z",
+    "description": "Regular lawn maintenance",
+    "icon": "🌿",
+    "isActive": true,
+    "name": "Gardening - Lawn Mowing",
+    "parentCategory": "6909074c4068157ba630c11b",
+    "priceRange": {
+      "min": 250,
+      "max": 500
+    },
+    "updatedAt": "2025-11-03T19:49:32.545Z"
+  },
+  {
+    "_id": "6909074c4068157ba630c11d",
+    "slug": "gardening-plant-care",
+    "__v": 0,
+    "createdAt": "2025-11-03T19:49:32.558Z",
+    "description": "Watering, pruning and plant health",
+    "icon": "🌺",
+    "isActive": true,
+    "name": "Gardening - Plant Care",
+    "parentCategory": "6909074c4068157ba630c11b",
+    "priceRange": {
+      "min": 300,
+      "max": 600
+    },
+    "updatedAt": "2025-11-03T19:49:32.558Z"
+  },
+  {
+    "_id": "6909074c4068157ba630c11e",
+    "slug": "gardening-landscaping",
+    "__v": 0,
+    "createdAt": "2025-11-03T19:49:32.565Z",
+    "description": "Garden design and landscaping",
+    "icon": "🏡",
+    "isActive": true,
+    "name": "Gardening - Landscaping",
+    "parentCategory": "6909074c4068157ba630c11b",
+    "priceRange": {
+      "min": 500,
+      "max": 1200
+    },
+    "updatedAt": "2025-11-03T19:49:32.565Z"
+  },
+  {
+    "_id": "6909074c4068157ba630c11f",
+    "slug": "gardening-tree-trimming",
+    "__v": 0,
+    "createdAt": "2025-11-03T19:49:32.571Z",
+    "description": "Tree maintenance and branch removal",
+    "icon": "🌳",
+    "isActive": true,
+    "name": "Gardening - Tree Trimming",
+    "parentCategory": "6909074c4068157ba630c11b",
+    "priceRange": {
+      "min": 400,
+      "max": 1000
+    },
+    "updatedAt": "2025-11-03T19:49:32.571Z"
+  },
+  {
+    "_id": "6909074c4068157ba630c120",
+    "slug": "shopping",
+    "__v": 0,
+    "createdAt": "2025-11-03T19:49:32.580Z",
+    "description": "Personal shopping and errand services",
+    "icon": "🛒",
+    "isActive": true,
+    "name": "Shopping",
+    "parentCategory": null,
+    "priceRange": {
+      "min": 150,
+      "max": 800
+    },
+    "updatedAt": "2025-11-03T19:49:32.580Z"
+  },
+  {
+    "_id": "6909074c4068157ba630c121",
+    "slug": "shopping-grocery-shopping",
+    "__v": 0,
+    "createdAt": "2025-11-03T19:49:32.586Z",
+    "description": "Buy and deliver groceries",
+    "icon": "🥕",
+    "isActive": true,
+    "name": "Shopping - Grocery Shopping",
+    "parentCategory": "6909074c4068157ba630c120",
+    "priceRange": {
+      "min": 150,
+      "max": 400
+    },
+    "updatedAt": "2025-11-03T19:49:32.586Z"
+  },
+  {
+    "_id": "6909074c4068157ba630c122",
+    "slug": "shopping-clothing-shopping",
+    "__v": 0,
+    "createdAt": "2025-11-03T19:49:32.593Z",
+    "description": "Personal shopping for clothes",
+    "icon": "👕",
+    "isActive": true,
+    "name": "Shopping - Clothing Shopping",
+    "parentCategory": "6909074c4068157ba630c120",
+    "priceRange": {
+      "min": 200,
+      "max": 500
+    },
+    "updatedAt": "2025-11-03T19:49:32.593Z"
+  },
+  {
+    "_id": "6909074c4068157ba630c123",
+    "slug": "shopping-gift-shopping",
+    "__v": 0,
+    "createdAt": "2025-11-03T19:49:32.599Z",
+    "description": "Help with gift selection and purchase",
+    "icon": "🎁",
+    "isActive": true,
+    "name": "Shopping - Gift Shopping",
+    "parentCategory": "6909074c4068157ba630c120",
+    "priceRange": {
+      "min": 200,
+      "max": 600
+    },
+    "updatedAt": "2025-11-03T19:49:32.599Z"
+  },
+  {
+    "_id": "6909074c4068157ba630c124",
+    "slug": "shopping-general-errands",
+    "__v": 0,
+    "createdAt": "2025-11-03T19:49:32.604Z",
+    "description": "Run various errands and tasks",
+    "icon": "📝",
+    "isActive": true,
+    "name": "Shopping - General Errands",
+    "parentCategory": "6909074c4068157ba630c120",
+    "priceRange": {
+      "min": 150,
+      "max": 800
+    },
+    "updatedAt": "2025-11-03T19:49:32.604Z"
+  },
+  {
+    "_id": "6909074c4068157ba630c125",
+    "slug": "technology",
+    "__v": 0,
+    "createdAt": "2025-11-03T19:49:32.610Z",
+    "description": "Tech support and digital services",
+    "icon": "💻",
+    "isActive": true,
+    "name": "Technology",
+    "parentCategory": null,
+    "priceRange": {
+      "min": 400,
+      "max": 2500
+    },
+    "updatedAt": "2025-11-03T19:49:32.610Z"
+  },
+  {
+    "_id": "6909074c4068157ba630c126",
+    "slug": "technology-computer-repair",
+    "__v": 0,
+    "createdAt": "2025-11-03T19:49:32.617Z",
+    "description": "Hardware and software troubleshooting",
+    "icon": "🖥️",
+    "isActive": true,
+    "name": "Technology - Computer Repair",
+    "parentCategory": "6909074c4068157ba630c125",
+    "priceRange": {
+      "min": 400,
+      "max": 1500
+    },
+    "updatedAt": "2025-11-03T19:49:32.617Z"
+  },
+  {
+    "_id": "6909074c4068157ba630c127",
+    "slug": "technology-smartphone-help",
+    "__v": 0,
+    "createdAt": "2025-11-03T19:49:32.622Z",
+    "description": "Smartphone setup and troubleshooting",
+    "icon": "📱",
+    "isActive": true,
+    "name": "Technology - Smartphone Help",
+    "parentCategory": "6909074c4068157ba630c125",
+    "priceRange": {
+      "min": 300,
+      "max": 1000
+    },
+    "updatedAt": "2025-11-03T19:49:32.622Z"
+  },
+  {
+    "_id": "6909074c4068157ba630c128",
+    "slug": "technology-wifi-setup",
+    "__v": 0,
+    "createdAt": "2025-11-03T19:49:32.628Z",
+    "description": "Internet and network setup",
+    "icon": "📶",
+    "isActive": true,
+    "name": "Technology - WiFi Setup",
+    "parentCategory": "6909074c4068157ba630c125",
+    "priceRange": {
+      "min": 500,
+      "max": 1500
+    },
+    "updatedAt": "2025-11-03T19:49:32.628Z"
+  },
+  {
+    "_id": "6909074c4068157ba630c129",
+    "slug": "technology-smart-home-setup",
+    "__v": 0,
+    "createdAt": "2025-11-03T19:49:32.634Z",
+    "description": "Installation of smart home devices",
+    "icon": "🏠",
+    "isActive": true,
+    "name": "Technology - Smart Home Setup",
+    "parentCategory": "6909074c4068157ba630c125",
+    "priceRange": {
+      "min": 600,
+      "max": 2500
+    },
+    "updatedAt": "2025-11-03T19:49:32.634Z"
+  },
+  {
+    "_id": "6909074c4068157ba630c12a",
+    "slug": "other",
+    "__v": 0,
+    "createdAt": "2025-11-03T19:49:32.640Z",
+    "description": "Other miscellaneous services",
+    "icon": "📋",
+    "isActive": true,
+    "name": "Other",
+    "parentCategory": null,
+    "priceRange": {
+      "min": 200,
+      "max": 1000
+    },
+    "updatedAt": "2025-11-03T19:49:32.640Z"
+  },
+  {
+    "_id": "6909074c4068157ba630c12b",
+    "slug": "other-pet-care",
+    "__v": 0,
+    "createdAt": "2025-11-03T19:49:32.647Z",
+    "description": "Pet sitting and walking services",
+    "icon": "🐾",
+    "isActive": true,
+    "name": "Other - Pet Care",
+    "parentCategory": "6909074c4068157ba630c12a",
+    "priceRange": {
+      "min": 200,
+      "max": 500
+    },
+    "updatedAt": "2025-11-03T19:49:32.647Z"
+  },
+  {
+    "_id": "6909074c4068157ba630c12c",
+    "slug": "other-event-help",
+    "__v": 0,
+    "createdAt": "2025-11-03T19:49:32.652Z",
+    "description": "Assistance with event setup and management",
+    "icon": "🎉",
+    "isActive": true,
+    "name": "Other - Event Help",
+    "parentCategory": "6909074c4068157ba630c12a",
+    "priceRange": {
+      "min": 300,
+      "max": 1000
+    },
+    "updatedAt": "2025-11-03T19:49:32.652Z"
+  },
+  {
+    "_id": "6909074c4068157ba630c12d",
+    "slug": "other-teaching-tutoring",
+    "__v": 0,
+    "createdAt": "2025-11-03T19:49:32.657Z",
+    "description": "Educational assistance and tutoring",
+    "icon": "📚",
+    "isActive": true,
+    "name": "Other - Teaching/Tutoring",
+    "parentCategory": "6909074c4068157ba630c12a",
+    "priceRange": {
+      "min": 250,
+      "max": 800
+    },
+    "updatedAt": "2025-11-03T19:49:32.657Z"
+  },
+  {
+    "_id": "6909074c4068157ba630c12e",
+    "slug": "other-custom-services",
+    "__v": 0,
+    "createdAt": "2025-11-03T19:49:32.666Z",
+    "description": "Other services not listed elsewhere",
+    "icon": "✨",
+    "isActive": true,
+    "name": "Other - Custom Services",
+    "parentCategory": "6909074c4068157ba630c12a",
+    "priceRange": {
+      "min": 200,
+      "max": 1000
+    },
+    "updatedAt": "2025-11-03T19:49:32.666Z"
+  }
+]

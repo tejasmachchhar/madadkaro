@@ -1,10 +1,10 @@
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import { AuthProvider } from './context/AuthContext';
-import { useEffect } from 'react';
 
 // Layout
 import Layout from './components/Layout';
 import PrivateRoute from './components/PrivateRoute';
+import PushNotificationInitializer from './components/PushNotificationInitializer';
 
 // Public Pages
 import HomePage from './pages/HomePage';
@@ -12,7 +12,6 @@ import LoginPage from './pages/LoginPage';
 import RegisterPage from './pages/RegisterPage';
 import NotFoundPage from './pages/NotFoundPage';
 import UnauthorizedPage from './pages/UnauthorizedPage';
-import LocationPickerTestPage from './pages/LocationPickerTestPage';
 
 // Protected Pages
 import ProfilePage from './pages/ProfilePage';
@@ -31,15 +30,6 @@ import AdminFeesPage from './pages/AdminFeesPage';
 import TaskerProfilePage from './pages/TaskerProfilePage';
 
 function App() {
-  // Initialize push notifications
-  useEffect(() => {
-    if (typeof window !== 'undefined') {
-      import('./hooks/usePushNotifications').then((module) => {
-        module.default();
-      });
-    }
-  }, []);
-
   return (
     <AuthProvider>
       <Router
@@ -48,6 +38,7 @@ function App() {
           v7_relativeSplatPath: true,
         }}
       >
+        <PushNotificationInitializer />
         <Routes>
           <Route path="/" element={<Layout />}>
             {/* Public Routes */}
@@ -55,7 +46,6 @@ function App() {
             <Route path="login" element={<LoginPage />} />
             <Route path="register" element={<RegisterPage />} />
             <Route path="unauthorized" element={<UnauthorizedPage />} />
-            <Route path="location-test" element={<LocationPickerTestPage />} />
             
             {/* Protected Routes */}
             <Route element={<PrivateRoute />}>

@@ -1,0 +1,774 @@
+[
+  {
+    "_id": "690af45c23ba0352211ea6c8",
+    "recipient": "690904297571a6d3ae258fcb",
+    "sender": "6908f4797571a6d3ae2588a0",
+    "type": "bid",
+    "title": "New Bid Received",
+    "message": "Tejas Tasker has placed a bid of ₹450 on your task \"t2\"",
+    "isRead": true,
+    "task": "690909ffad7433a495e56d20",
+    "bid": "690af45c23ba0352211ea6c6",
+    "data": {
+      "amount": 450,
+      "taskerName": "Tejas Tasker",
+      "taskTitle": "t2"
+    },
+    "createdAt": "2025-11-05T06:53:16.046Z",
+    "updatedAt": "2025-11-05T06:53:29.933Z",
+    "__v": 0
+  },
+  {
+    "_id": "690af49723ba0352211ea77d",
+    "recipient": "6908f4797571a6d3ae2588a0",
+    "sender": "690904297571a6d3ae258fcb",
+    "type": "bid_rejected",
+    "title": "Bid Rejected",
+    "message": "Your bid of ₹451 on task \"t2\" has been rejected.",
+    "isRead": true,
+    "task": "690909ffad7433a495e56d20",
+    "bid": "690af45c23ba0352211ea6c6",
+    "data": {
+      "amount": 451,
+      "customerName": "tejas customer",
+      "taskTitle": "t2",
+      "reason": "try"
+    },
+    "createdAt": "2025-11-05T06:54:15.902Z",
+    "updatedAt": "2025-11-05T06:54:51.490Z",
+    "__v": 0
+  },
+  {
+    "_id": "694d37bc4c0da22ddb0fb1cb",
+    "recipient": "690904297571a6d3ae258fcb",
+    "sender": "6908f4797571a6d3ae2588a0",
+    "type": "bid",
+    "title": "New Bid Received",
+    "message": "Tejas Tasker has placed a bid of ₹100 on your task \"gpay\"",
+    "isRead": true,
+    "task": "694d37a34c0da22ddb0fb17f",
+    "bid": "694d37bc4c0da22ddb0fb1c9",
+    "data": {
+      "amount": 100,
+      "taskerName": "Tejas Tasker",
+      "taskTitle": "gpay"
+    },
+    "createdAt": "2025-12-25T13:10:20.809Z",
+    "updatedAt": "2025-12-25T15:04:00.325Z",
+    "__v": 0
+  },
+  {
+    "_id": "694d37c64c0da22ddb0fb217",
+    "recipient": "6908f4797571a6d3ae2588a0",
+    "sender": "690904297571a6d3ae258fcb",
+    "type": "bid_accepted",
+    "title": "Bid Accepted",
+    "message": "Your bid of ₹100 on task \"gpay\" has been accepted!",
+    "isRead": true,
+    "task": "694d37a34c0da22ddb0fb17f",
+    "bid": "694d37bc4c0da22ddb0fb1c9",
+    "data": {
+      "amount": 100,
+      "customerName": "tejas customer",
+      "taskTitle": "gpay"
+    },
+    "createdAt": "2025-12-25T13:10:30.551Z",
+    "updatedAt": "2025-12-25T14:45:56.796Z",
+    "__v": 0
+  },
+  {
+    "_id": "694d3b524c0da22ddb0fb773",
+    "recipient": "690904297571a6d3ae258fcb",
+    "sender": "6908f4797571a6d3ae2588a0",
+    "type": "bid",
+    "title": "New Bid Received",
+    "message": "Tejas Tasker has placed a bid of ₹210 on your task \"kjh\"",
+    "isRead": true,
+    "task": "69090797b973c9a21a271605",
+    "bid": "694d3b524c0da22ddb0fb771",
+    "data": {
+      "amount": 210,
+      "taskerName": "Tejas Tasker",
+      "taskTitle": "kjh"
+    },
+    "createdAt": "2025-12-25T13:25:38.333Z",
+    "updatedAt": "2025-12-25T15:01:59.002Z",
+    "__v": 0
+  },
+  {
+    "_id": "694d3b5f4c0da22ddb0fb7be",
+    "recipient": "6908f4797571a6d3ae2588a0",
+    "sender": "690904297571a6d3ae258fcb",
+    "type": "bid_accepted",
+    "title": "Bid Accepted",
+    "message": "Your bid of ₹210 on task \"kjh\" has been accepted!",
+    "isRead": true,
+    "task": "69090797b973c9a21a271605",
+    "bid": "694d3b524c0da22ddb0fb771",
+    "data": {
+      "amount": 210,
+      "customerName": "tejas customer",
+      "taskTitle": "kjh"
+    },
+    "createdAt": "2025-12-25T13:25:51.265Z",
+    "updatedAt": "2025-12-25T14:45:56.796Z",
+    "__v": 0
+  },
+  {
+    "_id": "694d5508f6d8d8b78ba74053",
+    "recipient": "690904297571a6d3ae258fcb",
+    "sender": "6908f4797571a6d3ae2588a0",
+    "type": "bid",
+    "title": "New Bid Received",
+    "message": "Tejas Tasker has placed a bid of ₹21 on your task \"chhas\"",
+    "isRead": true,
+    "task": "694d53b249b96d6416103082",
+    "bid": "694d5508f6d8d8b78ba74051",
+    "data": {
+      "amount": 21,
+      "taskerName": "Tejas Tasker",
+      "taskTitle": "chhas"
+    },
+    "createdAt": "2025-12-25T15:15:20.392Z",
+    "updatedAt": "2025-12-25T15:25:06.051Z",
+    "__v": 0
+  },
+  {
+    "_id": "694d551bf6d8d8b78ba7408f",
+    "recipient": "6908f4797571a6d3ae2588a0",
+    "sender": "690904297571a6d3ae258fcb",
+    "type": "bid_accepted",
+    "title": "Bid Accepted",
+    "message": "Your bid of ₹21 on task \"chhas\" has been accepted!",
+    "isRead": true,
+    "task": "694d53b249b96d6416103082",
+    "bid": "694d5508f6d8d8b78ba74051",
+    "data": {
+      "amount": 21,
+      "customerName": "tejas customer",
+      "taskTitle": "chhas"
+    },
+    "createdAt": "2025-12-25T15:15:39.737Z",
+    "updatedAt": "2025-12-25T17:25:26.306Z",
+    "__v": 0
+  },
+  {
+    "_id": "694d56384f5c673fc3e7261f",
+    "recipient": "690904297571a6d3ae258fcb",
+    "sender": "6908f4797571a6d3ae2588a0",
+    "type": "bid",
+    "title": "New Bid Received",
+    "message": "Tejas Tasker has placed a bid of ₹1122 on your task \"Teacher\"",
+    "isRead": true,
+    "task": "694d54e2f6d8d8b78ba73ffd",
+    "bid": "694d56384f5c673fc3e7261d",
+    "data": {
+      "amount": 1122,
+      "taskerName": "Tejas Tasker",
+      "taskTitle": "Teacher"
+    },
+    "createdAt": "2025-12-25T15:20:24.551Z",
+    "updatedAt": "2025-12-25T15:25:06.051Z",
+    "__v": 0
+  },
+  {
+    "_id": "694d56464f5c673fc3e72647",
+    "recipient": "6908f4797571a6d3ae2588a0",
+    "sender": "690904297571a6d3ae258fcb",
+    "type": "bid_accepted",
+    "title": "Bid Accepted",
+    "message": "Your bid of ₹1122 on task \"Teacher\" has been accepted!",
+    "isRead": true,
+    "task": "694d54e2f6d8d8b78ba73ffd",
+    "bid": "694d56384f5c673fc3e7261d",
+    "data": {
+      "amount": 1122,
+      "customerName": "tejas customer",
+      "taskTitle": "Teacher"
+    },
+    "createdAt": "2025-12-25T15:20:38.140Z",
+    "updatedAt": "2025-12-25T17:25:26.306Z",
+    "__v": 0
+  },
+  {
+    "_id": "694d58942070c3bdbc7350e8",
+    "recipient": "690904297571a6d3ae258fcb",
+    "sender": "6908f4797571a6d3ae2588a0",
+    "type": "bid",
+    "title": "New Bid Received",
+    "message": "Tejas Tasker has placed a bid of ₹111 on your task \"wifi setup\"",
+    "isRead": false,
+    "task": "694d53ff49b96d64161030a1",
+    "bid": "694d58942070c3bdbc7350e6",
+    "data": {
+      "amount": 111,
+      "taskerName": "Tejas Tasker",
+      "taskTitle": "wifi setup"
+    },
+    "createdAt": "2025-12-25T15:30:28.890Z",
+    "updatedAt": "2025-12-25T15:30:28.890Z",
+    "__v": 0
+  },
+  {
+    "_id": "694d58a12070c3bdbc73511f",
+    "recipient": "6908f4797571a6d3ae2588a0",
+    "sender": "690904297571a6d3ae258fcb",
+    "type": "bid_accepted",
+    "title": "Bid Accepted",
+    "message": "Your bid of ₹111 on task \"wifi setup\" has been accepted!",
+    "isRead": true,
+    "task": "694d53ff49b96d64161030a1",
+    "bid": "694d58942070c3bdbc7350e6",
+    "data": {
+      "amount": 111,
+      "customerName": "tejas customer",
+      "taskTitle": "wifi setup",
+      "status": "accepted"
+    },
+    "createdAt": "2025-12-25T15:30:41.104Z",
+    "updatedAt": "2025-12-25T17:25:26.306Z",
+    "__v": 0
+  },
+  {
+    "_id": "694d5bf6a062b8f4b15ce0c9",
+    "recipient": "690904297571a6d3ae258fcb",
+    "sender": "6908f4797571a6d3ae2588a0",
+    "type": "bid",
+    "title": "New Bid Received",
+    "message": "Tejas Tasker has placed a bid of ₹212 on your task \"khg\"",
+    "isRead": false,
+    "task": "694d5bd9a062b8f4b15ce092",
+    "bid": "694d5bf6a062b8f4b15ce0c7",
+    "data": {
+      "amount": 212,
+      "taskerName": "Tejas Tasker",
+      "taskTitle": "khg"
+    },
+    "createdAt": "2025-12-25T15:44:54.574Z",
+    "updatedAt": "2025-12-25T15:44:54.574Z",
+    "__v": 0
+  },
+  {
+    "_id": "694d5bfca062b8f4b15ce0f2",
+    "recipient": "6908f4797571a6d3ae2588a0",
+    "sender": "690904297571a6d3ae258fcb",
+    "type": "bid_accepted",
+    "title": "Bid Accepted",
+    "message": "Your bid of ₹212 on task \"khg\" has been accepted!",
+    "isRead": true,
+    "task": "694d5bd9a062b8f4b15ce092",
+    "bid": "694d5bf6a062b8f4b15ce0c7",
+    "data": {
+      "amount": 212,
+      "customerName": "tejas customer",
+      "taskTitle": "khg",
+      "status": "accepted"
+    },
+    "createdAt": "2025-12-25T15:45:00.905Z",
+    "updatedAt": "2025-12-25T17:25:26.306Z",
+    "__v": 0
+  },
+  {
+    "_id": "694d5bfca062b8f4b15ce0f4",
+    "recipient": "690904297571a6d3ae258fcb",
+    "sender": "690904297571a6d3ae258fcb",
+    "type": "task_assigned",
+    "title": "Task Assigned",
+    "message": "Your task \"khg\" has been assigned to Tejas Tasker.",
+    "isRead": false,
+    "task": "694d5bd9a062b8f4b15ce092",
+    "bid": "694d5bf6a062b8f4b15ce0c7",
+    "data": {
+      "taskerId": "6908f4797571a6d3ae2588a0",
+      "taskerName": "Tejas Tasker",
+      "taskTitle": "khg",
+      "bidAmount": 212,
+      "status": "assigned"
+    },
+    "createdAt": "2025-12-25T15:45:00.907Z",
+    "updatedAt": "2025-12-25T15:45:00.907Z",
+    "__v": 0
+  },
+  {
+    "_id": "694d5d431d83a4dd702e373c",
+    "recipient": "690904297571a6d3ae258fcb",
+    "sender": "6908f4797571a6d3ae2588a0",
+    "type": "completion_requested",
+    "title": "Task Completion Requested",
+    "message": "Tejas Tasker has requested to mark task \"khg\" as completed.",
+    "isRead": false,
+    "task": "694d5bd9a062b8f4b15ce092",
+    "data": {
+      "taskerId": "6908f4797571a6d3ae2588a0",
+      "taskerName": "Tejas Tasker",
+      "taskTitle": "khg",
+      "completionNote": "Ok?"
+    },
+    "createdAt": "2025-12-25T15:50:27.070Z",
+    "updatedAt": "2025-12-25T15:50:27.070Z",
+    "__v": 0
+  },
+  {
+    "_id": "694d5d4d1d83a4dd702e376d",
+    "recipient": "6908f4797571a6d3ae2588a0",
+    "sender": "690904297571a6d3ae258fcb",
+    "type": "completion_confirmed",
+    "title": "Task Completion Confirmed",
+    "message": "tejas customer has confirmed completion of task \"khg\".",
+    "isRead": true,
+    "task": "694d5bd9a062b8f4b15ce092",
+    "data": {
+      "customerId": "690904297571a6d3ae258fcb",
+      "customerName": "tejas customer",
+      "taskTitle": "khg",
+      "customerFeedback": "good bro"
+    },
+    "createdAt": "2025-12-25T15:50:37.870Z",
+    "updatedAt": "2025-12-25T17:25:26.306Z",
+    "__v": 0
+  },
+  {
+    "_id": "694d5d4d1d83a4dd702e3789",
+    "recipient": "6908f4797571a6d3ae2588a0",
+    "sender": "690904297571a6d3ae258fcb",
+    "type": "review_received",
+    "title": "New Review Received",
+    "message": "tejas customer has left you a 4-star review for task \"khg\".",
+    "isRead": true,
+    "task": "694d5bd9a062b8f4b15ce092",
+    "data": {
+      "rating": 4,
+      "reviewerName": "tejas customer",
+      "taskTitle": "khg",
+      "comment": "good bro"
+    },
+    "createdAt": "2025-12-25T15:50:37.929Z",
+    "updatedAt": "2025-12-25T17:25:26.306Z",
+    "__v": 0
+  },
+  {
+    "_id": "694d5d761d83a4dd702e3808",
+    "recipient": "690904297571a6d3ae258fcb",
+    "sender": "6908f4797571a6d3ae2588a0",
+    "type": "completion_requested",
+    "title": "Task Completion Requested",
+    "message": "Tejas Tasker has requested to mark task \"wifi setup\" as completed.",
+    "isRead": false,
+    "task": "694d53ff49b96d64161030a1",
+    "data": {
+      "taskerId": "6908f4797571a6d3ae2588a0",
+      "taskerName": "Tejas Tasker",
+      "taskTitle": "wifi setup",
+      "completionNote": "okkk ee"
+    },
+    "createdAt": "2025-12-25T15:51:18.228Z",
+    "updatedAt": "2025-12-25T15:51:18.228Z",
+    "__v": 0
+  },
+  {
+    "_id": "694d5d7d1d83a4dd702e3835",
+    "recipient": "6908f4797571a6d3ae2588a0",
+    "sender": "690904297571a6d3ae258fcb",
+    "type": "completion_rejected",
+    "title": "Task Completion Rejected",
+    "message": "tejas customer has rejected the completion request for task \"wifi setup\".",
+    "isRead": true,
+    "task": "694d53ff49b96d64161030a1",
+    "data": {
+      "customerId": "690904297571a6d3ae258fcb",
+      "customerName": "tejas customer",
+      "taskTitle": "wifi setup",
+      "rejectionReason": "nooo"
+    },
+    "createdAt": "2025-12-25T15:51:25.134Z",
+    "updatedAt": "2025-12-25T17:25:26.306Z",
+    "__v": 0
+  },
+  {
+    "_id": "694d5da51d83a4dd702e3872",
+    "recipient": "690904297571a6d3ae258fcb",
+    "sender": "6908f4797571a6d3ae2588a0",
+    "type": "completion_requested",
+    "title": "Task Completion Requested",
+    "message": "Tejas Tasker has requested to mark task \"wifi setup\" as completed.",
+    "isRead": false,
+    "task": "694d53ff49b96d64161030a1",
+    "data": {
+      "taskerId": "6908f4797571a6d3ae2588a0",
+      "taskerName": "Tejas Tasker",
+      "taskTitle": "wifi setup",
+      "completionNote": "now?\n"
+    },
+    "createdAt": "2025-12-25T15:52:05.379Z",
+    "updatedAt": "2025-12-25T15:52:05.379Z",
+    "__v": 0
+  },
+  {
+    "_id": "694d5db71d83a4dd702e38bf",
+    "recipient": "6908f4797571a6d3ae2588a0",
+    "sender": "690904297571a6d3ae258fcb",
+    "type": "completion_confirmed",
+    "title": "Task Completion Confirmed",
+    "message": "tejas customer has confirmed completion of task \"wifi setup\".",
+    "isRead": true,
+    "task": "694d53ff49b96d64161030a1",
+    "data": {
+      "customerId": "690904297571a6d3ae258fcb",
+      "customerName": "tejas customer",
+      "taskTitle": "wifi setup",
+      "customerFeedback": "now ok!"
+    },
+    "createdAt": "2025-12-25T15:52:23.808Z",
+    "updatedAt": "2025-12-25T17:25:26.306Z",
+    "__v": 0
+  },
+  {
+    "_id": "694d5db71d83a4dd702e38e0",
+    "recipient": "6908f4797571a6d3ae2588a0",
+    "sender": "690904297571a6d3ae258fcb",
+    "type": "review_received",
+    "title": "New Review Received",
+    "message": "tejas customer has left you a 4-star review for task \"wifi setup\".",
+    "isRead": true,
+    "task": "694d53ff49b96d64161030a1",
+    "data": {
+      "rating": 4,
+      "reviewerName": "tejas customer",
+      "taskTitle": "wifi setup",
+      "comment": "now ok!"
+    },
+    "createdAt": "2025-12-25T15:52:23.859Z",
+    "updatedAt": "2025-12-25T17:25:26.306Z",
+    "__v": 0
+  },
+  {
+    "_id": "694d65e2040d8f29c0c17f52",
+    "recipient": "690904297571a6d3ae258fcb",
+    "sender": "6908f4797571a6d3ae2588a0",
+    "type": "completion_requested",
+    "title": "Task Completion Requested",
+    "message": "Tejas Tasker has requested to mark task \"chhas\" as completed.",
+    "isRead": false,
+    "task": "694d53b249b96d6416103082",
+    "data": {
+      "taskerId": "6908f4797571a6d3ae2588a0",
+      "taskerName": "Tejas Tasker",
+      "taskTitle": "chhas",
+      "completionNote": "chhas avi gai"
+    },
+    "createdAt": "2025-12-25T16:27:14.786Z",
+    "updatedAt": "2025-12-25T16:27:14.786Z",
+    "__v": 0
+  },
+  {
+    "_id": "694d65ed040d8f29c0c17f80",
+    "recipient": "6908f4797571a6d3ae2588a0",
+    "sender": "690904297571a6d3ae258fcb",
+    "type": "completion_confirmed",
+    "title": "Task Completion Confirmed",
+    "message": "tejas customer has confirmed completion of task \"chhas\".",
+    "isRead": true,
+    "task": "694d53b249b96d6416103082",
+    "data": {
+      "customerId": "690904297571a6d3ae258fcb",
+      "customerName": "tejas customer",
+      "taskTitle": "chhas",
+      "customerFeedback": "ha"
+    },
+    "createdAt": "2025-12-25T16:27:25.405Z",
+    "updatedAt": "2025-12-25T17:25:26.306Z",
+    "__v": 0
+  },
+  {
+    "_id": "694d65ed040d8f29c0c17f93",
+    "recipient": "6908f4797571a6d3ae2588a0",
+    "sender": "690904297571a6d3ae258fcb",
+    "type": "review_received",
+    "title": "New Review Received",
+    "message": "tejas customer has left you a 5-star review for task \"chhas\".",
+    "isRead": true,
+    "task": "694d53b249b96d6416103082",
+    "data": {
+      "rating": 5,
+      "reviewerName": "tejas customer",
+      "taskTitle": "chhas",
+      "comment": "ha"
+    },
+    "createdAt": "2025-12-25T16:27:25.452Z",
+    "updatedAt": "2025-12-25T17:25:26.306Z",
+    "__v": 0
+  },
+  {
+    "_id": "694d67acf0e301025a7b642c",
+    "recipient": "690904297571a6d3ae258fcb",
+    "sender": "6908f4797571a6d3ae2588a0",
+    "type": "bid",
+    "title": "New Bid Received",
+    "message": "Tejas Tasker has placed a bid of ₹111 on your task \"my-bids trial\"",
+    "isRead": false,
+    "task": "694d6795f0e301025a7b63c1",
+    "bid": "694d67acf0e301025a7b642a",
+    "data": {
+      "amount": 111,
+      "taskerName": "Tejas Tasker",
+      "taskTitle": "my-bids trial"
+    },
+    "createdAt": "2025-12-25T16:34:52.189Z",
+    "updatedAt": "2025-12-25T16:34:52.189Z",
+    "__v": 0
+  },
+  {
+    "_id": "694d67b1f0e301025a7b6455",
+    "recipient": "6908f4797571a6d3ae2588a0",
+    "sender": "690904297571a6d3ae258fcb",
+    "type": "bid_accepted",
+    "title": "Bid Accepted",
+    "message": "Your bid of ₹111 on task \"my-bids trial\" has been accepted!",
+    "isRead": true,
+    "task": "694d6795f0e301025a7b63c1",
+    "bid": "694d67acf0e301025a7b642a",
+    "data": {
+      "amount": 111,
+      "customerName": "tejas customer",
+      "taskTitle": "my-bids trial",
+      "status": "accepted"
+    },
+    "createdAt": "2025-12-25T16:34:57.564Z",
+    "updatedAt": "2025-12-25T17:25:26.306Z",
+    "__v": 0
+  },
+  {
+    "_id": "694d67b1f0e301025a7b6457",
+    "recipient": "690904297571a6d3ae258fcb",
+    "sender": "690904297571a6d3ae258fcb",
+    "type": "task_assigned",
+    "title": "Task Assigned",
+    "message": "Your task \"my-bids trial\" has been assigned to Tejas Tasker.",
+    "isRead": false,
+    "task": "694d6795f0e301025a7b63c1",
+    "bid": "694d67acf0e301025a7b642a",
+    "data": {
+      "taskerId": "6908f4797571a6d3ae2588a0",
+      "taskerName": "Tejas Tasker",
+      "taskTitle": "my-bids trial",
+      "bidAmount": 111,
+      "status": "assigned"
+    },
+    "createdAt": "2025-12-25T16:34:57.566Z",
+    "updatedAt": "2025-12-25T16:34:57.566Z",
+    "__v": 0
+  },
+  {
+    "_id": "694d67bbf0e301025a7b6495",
+    "recipient": "690904297571a6d3ae258fcb",
+    "sender": "690904297571a6d3ae258fcb",
+    "type": "task_started",
+    "title": "Task Started",
+    "message": "tejas customer has started working on task \"my-bids trial\".",
+    "isRead": false,
+    "task": "694d6795f0e301025a7b63c1",
+    "data": {
+      "taskId": "694d6795f0e301025a7b63c1",
+      "status": "inProgress",
+      "taskTitle": "my-bids trial",
+      "taskerId": "6908f4797571a6d3ae2588a0",
+      "taskerName": "Tejas Tasker",
+      "customerId": "690904297571a6d3ae258fcb",
+      "customerName": "tejas customer",
+      "updatedBy": "690904297571a6d3ae258fcb",
+      "updatedByName": "tejas customer"
+    },
+    "createdAt": "2025-12-25T16:35:07.213Z",
+    "updatedAt": "2025-12-25T16:35:07.213Z",
+    "__v": 0
+  },
+  {
+    "_id": "694d67bbf0e301025a7b6497",
+    "recipient": "6908f4797571a6d3ae2588a0",
+    "sender": "690904297571a6d3ae258fcb",
+    "type": "task_started",
+    "title": "Task Started",
+    "message": "tejas customer has started working on task \"my-bids trial\".",
+    "isRead": true,
+    "task": "694d6795f0e301025a7b63c1",
+    "data": {
+      "taskId": "694d6795f0e301025a7b63c1",
+      "status": "inProgress",
+      "taskTitle": "my-bids trial",
+      "taskerId": "6908f4797571a6d3ae2588a0",
+      "taskerName": "Tejas Tasker",
+      "customerId": "690904297571a6d3ae258fcb",
+      "customerName": "tejas customer",
+      "updatedBy": "690904297571a6d3ae258fcb",
+      "updatedByName": "tejas customer"
+    },
+    "createdAt": "2025-12-25T16:35:07.216Z",
+    "updatedAt": "2025-12-25T17:25:26.306Z",
+    "__v": 0
+  },
+  {
+    "_id": "694d67caf0e301025a7b64e6",
+    "recipient": "690904297571a6d3ae258fcb",
+    "sender": "6908f4797571a6d3ae2588a0",
+    "type": "completion_requested",
+    "title": "Task Completion Requested",
+    "message": "Tejas Tasker has requested to mark task \"my-bids trial\" as completed.",
+    "isRead": false,
+    "task": "694d6795f0e301025a7b63c1",
+    "data": {
+      "taskerId": "6908f4797571a6d3ae2588a0",
+      "taskerName": "Tejas Tasker",
+      "taskTitle": "my-bids trial",
+      "completionNote": "SS"
+    },
+    "createdAt": "2025-12-25T16:35:22.754Z",
+    "updatedAt": "2025-12-25T16:35:22.754Z",
+    "__v": 0
+  },
+  {
+    "_id": "694d67d5f0e301025a7b6514",
+    "recipient": "6908f4797571a6d3ae2588a0",
+    "sender": "690904297571a6d3ae258fcb",
+    "type": "completion_confirmed",
+    "title": "Task Completion Confirmed",
+    "message": "tejas customer has confirmed completion of task \"my-bids trial\".",
+    "isRead": true,
+    "task": "694d6795f0e301025a7b63c1",
+    "data": {
+      "customerId": "690904297571a6d3ae258fcb",
+      "customerName": "tejas customer",
+      "taskTitle": "my-bids trial",
+      "customerFeedback": ""
+    },
+    "createdAt": "2025-12-25T16:35:33.897Z",
+    "updatedAt": "2025-12-25T17:25:26.306Z",
+    "__v": 0
+  },
+  {
+    "_id": "694d67d5f0e301025a7b6527",
+    "recipient": "6908f4797571a6d3ae2588a0",
+    "sender": "690904297571a6d3ae258fcb",
+    "type": "review_received",
+    "title": "New Review Received",
+    "message": "tejas customer has left you a 2-star review for task \"my-bids trial\".",
+    "isRead": true,
+    "task": "694d6795f0e301025a7b63c1",
+    "data": {
+      "rating": 2,
+      "reviewerName": "tejas customer",
+      "taskTitle": "my-bids trial",
+      "comment": ""
+    },
+    "createdAt": "2025-12-25T16:35:33.928Z",
+    "updatedAt": "2025-12-25T17:25:26.306Z",
+    "__v": 0
+  },
+  {
+    "_id": "6954c652edf807e6447164f7",
+    "recipient": "690904297571a6d3ae258fcb",
+    "sender": "6908f4797571a6d3ae2588a0",
+    "type": "bid",
+    "title": "New Bid Received",
+    "message": "Tejas Tasker has placed a bid of ₹2231 on your task \"test 3112\"",
+    "isRead": false,
+    "task": "6954c631edf807e6447164cb",
+    "bid": "6954c652edf807e6447164f5",
+    "data": {
+      "amount": 2231,
+      "taskerName": "Tejas Tasker",
+      "taskTitle": "test 3112"
+    },
+    "createdAt": "2025-12-31T06:44:34.389Z",
+    "updatedAt": "2025-12-31T06:44:34.389Z",
+    "__v": 0
+  },
+  {
+    "_id": "6954c70eedf807e644716628",
+    "recipient": "6908f4797571a6d3ae2588a0",
+    "sender": "690904297571a6d3ae258fcb",
+    "type": "bid_accepted",
+    "title": "Bid Accepted",
+    "message": "Your bid of ₹2231 on task \"test 3112\" has been accepted!",
+    "isRead": false,
+    "task": "6954c631edf807e6447164cb",
+    "bid": "6954c652edf807e6447164f5",
+    "data": {
+      "amount": 2231,
+      "customerName": "tejas customer",
+      "taskTitle": "test 3112",
+      "status": "accepted"
+    },
+    "createdAt": "2025-12-31T06:47:42.762Z",
+    "updatedAt": "2025-12-31T06:47:42.762Z",
+    "__v": 0
+  },
+  {
+    "_id": "6954c70eedf807e64471662a",
+    "recipient": "690904297571a6d3ae258fcb",
+    "sender": "690904297571a6d3ae258fcb",
+    "type": "task_assigned",
+    "title": "Task Assigned",
+    "message": "Your task \"test 3112\" has been assigned to Tejas Tasker.",
+    "isRead": false,
+    "task": "6954c631edf807e6447164cb",
+    "bid": "6954c652edf807e6447164f5",
+    "data": {
+      "taskerId": "6908f4797571a6d3ae2588a0",
+      "taskerName": "Tejas Tasker",
+      "taskTitle": "test 3112",
+      "bidAmount": 2231,
+      "status": "assigned"
+    },
+    "createdAt": "2025-12-31T06:47:42.768Z",
+    "updatedAt": "2025-12-31T06:47:42.768Z",
+    "__v": 0
+  },
+  {
+    "_id": "6954c726edf807e644716668",
+    "recipient": "690904297571a6d3ae258fcb",
+    "sender": "690904297571a6d3ae258fcb",
+    "type": "task_started",
+    "title": "Task Started",
+    "message": "tejas customer has started working on task \"test 3112\".",
+    "isRead": false,
+    "task": "6954c631edf807e6447164cb",
+    "data": {
+      "taskId": "6954c631edf807e6447164cb",
+      "status": "inProgress",
+      "taskTitle": "test 3112",
+      "taskerId": "6908f4797571a6d3ae2588a0",
+      "taskerName": "Tejas Tasker",
+      "customerId": "690904297571a6d3ae258fcb",
+      "customerName": "tejas customer",
+      "updatedBy": "690904297571a6d3ae258fcb",
+      "updatedByName": "tejas customer"
+    },
+    "createdAt": "2025-12-31T06:48:06.504Z",
+    "updatedAt": "2025-12-31T06:48:06.504Z",
+    "__v": 0
+  },
+  {
+    "_id": "6954c726edf807e64471666a",
+    "recipient": "6908f4797571a6d3ae2588a0",
+    "sender": "690904297571a6d3ae258fcb",
+    "type": "task_started",
+    "title": "Task Started",
+    "message": "tejas customer has started working on task \"test 3112\".",
+    "isRead": false,
+    "task": "6954c631edf807e6447164cb",
+    "data": {
+      "taskId": "6954c631edf807e6447164cb",
+      "status": "inProgress",
+      "taskTitle": "test 3112",
+      "taskerId": "6908f4797571a6d3ae2588a0",
+      "taskerName": "Tejas Tasker",
+      "customerId": "690904297571a6d3ae258fcb",
+      "customerName": "tejas customer",
+      "updatedBy": "690904297571a6d3ae258fcb",
+      "updatedByName": "tejas customer"
+    },
+    "createdAt": "2025-12-31T06:48:06.510Z",
+    "updatedAt": "2025-12-31T06:48:06.510Z",
+    "__v": 0
+  }
+]
