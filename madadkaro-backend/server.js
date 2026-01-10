@@ -24,7 +24,10 @@ const io = socketIo(server, {
 });
 
 // Connect to MongoDB
-connectDB();
+connectDB().catch(error => {
+  console.error('Failed to start server:', error);
+  process.exit(1);
+});
 
 // Middleware
 app.use(cors({
