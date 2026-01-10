@@ -23,9 +23,15 @@ const io = socketIo(server, {
   }
 });
 
-// Connect to MongoDB
-connectDB().catch(error => {
-  console.error('Failed to start server:', error);
+// Handle uncaught exceptions
+process.on('uncaughtException', (error) => {
+  console.error('Uncaught Exception:', error);
+  process.exit(1);
+});
+
+// Handle unhandled rejections
+process.on('unhandledRejection', (reason, promise) => {
+  console.error('Unhandled Rejection at:', promise, 'reason:', reason);
   process.exit(1);
 });
 
@@ -123,7 +129,27 @@ app.use(errorHandler);
 // Port
 const PORT = process.env.PORT || 5000;
 
-// Start server
-server.listen(PORT, () => {
-  console.log(`Server running on port ${PORT}`);
-});
+// Start server function
+const startServer = async () => {
+  try {
+    console.log('Starting server...');
+    console.log('Node Environment:', process.env.NODE_ENV);
+    console.log('Port:', PORT);
+    
+    // Connect to MongoDB first
+    await connectDB();
+    console.log('Database connection successful');
+    
+    // Only start listening after DB connects
+    server.listen(PORT, () => {
+      console.log(`Server running on port ${PORT}`);
+    });
+  } catch (error) {
+    console.error('Failed to start server:', error.message);
+    console.error('Full error:', error);
+    process.exit(1);
+  }
+};
+
+// Start the server
+startServer();
