@@ -19,8 +19,6 @@ const server = http.createServer(app);
 const allowedOrigins = [
   process.env.CLIENT_URL || 'http://localhost:3000',
   'http://localhost:5173',
-  'https://tejasmachchhars-projects.vercel.app',
-  'http://tejasmachchhars-projects.vercel.app'
 ].filter(Boolean); // Remove any undefined/null values
 
 // Function to check if origin is allowed (handles dynamic Vercel preview URLs)

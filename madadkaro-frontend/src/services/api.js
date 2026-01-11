@@ -6,7 +6,14 @@ const getApiUrl = () => {
     return 'http://localhost:5000/api';
   }
   // Production URLs - update based on your deployment
-  return import.meta.env.VITE_API_URL || 'https://api.madadkaro.com/api';
+  // If VITE_API_URL is set, use it (should include /api if not already included)
+  // Otherwise, use the Render backend URL
+  const envUrl = import.meta.env.VITE_API_URL;
+  if (envUrl) {
+    // Ensure the URL ends with /api
+    return envUrl.endsWith('/api') ? envUrl : `${envUrl}/api`;
+  }
+  return 'https://madadkaro.onrender.com/api';
 };
 
 // Create an instance of axios

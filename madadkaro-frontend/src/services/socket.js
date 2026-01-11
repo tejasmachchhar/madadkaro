@@ -2,11 +2,17 @@ import io from 'socket.io-client';
 import { toast } from 'react-toastify';
 
 // Get API URL from environment or use production URL
+// Note: Socket.IO connects to the root server, not /api endpoint
 const getApiUrl = () => {
   if (typeof window !== 'undefined' && window.location.hostname === 'localhost') {
     return 'http://localhost:5000';
   }
-  return import.meta.env.VITE_API_URL || 'https://api.madadkaro.com';
+  // If VITE_API_URL is set, remove /api suffix if present (sockets connect to root)
+  const envUrl = import.meta.env.VITE_API_URL;
+  if (envUrl) {
+    return envUrl.replace(/\/api\/?$/, '');
+  }
+  return 'https://madadkaro.onrender.com';
 };
 
 const API_URL = getApiUrl();
