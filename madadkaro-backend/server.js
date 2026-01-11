@@ -14,9 +14,50 @@ dotenv.config();
 // Create Express app
 const app = express();
 const server = http.createServer(app);
+
+// Configure allowed origins for CORS
+const allowedOrigins = [
+  process.env.CLIENT_URL || 'http://localhost:3000',
+  'http://localhost:5173',
+  'https://tejasmachchhars-projects.vercel.app',
+  'http://tejasmachchhars-projects.vercel.app'
+].filter(Boolean); // Remove any undefined/null values
+
+// Function to check if origin is allowed (handles dynamic Vercel preview URLs)
+const isOriginAllowed = (origin) => {
+  if (!origin) return true; // Allow requests with no origin
+  
+  // Check exact match in allowed origins
+  if (allowedOrigins.includes(origin)) {
+    return true;
+  }
+  
+  // Allow any Vercel preview deployment URL
+  // Pattern: https://[project-name]-[hash]-[username].vercel.app
+  // Example: https://madadkaro-7qvgxnifx-tejasmachchhars-projects.vercel.app
+  const vercelPattern = /^https?:\/\/.*-tejasmachchhars-projects\.vercel\.app$/;
+  if (vercelPattern.test(origin)) {
+    return true;
+  }
+  
+  // Also allow any .vercel.app subdomain for flexibility
+  // You can remove this if you want to be more restrictive
+  if (origin.endsWith('.vercel.app')) {
+    return true;
+  }
+  
+  return false;
+};
+
 const io = socketIo(server, {
   cors: {
-    origin: [process.env.CLIENT_URL || 'http://localhost:3000', 'http://localhost:5173'],
+    origin: function (origin, callback) {
+      if (isOriginAllowed(origin)) {
+        callback(null, true);
+      } else {
+        callback(new Error('Not allowed by CORS'));
+      }
+    },
     methods: ['GET', 'POST'],
     credentials: true
   }
@@ -36,8 +77,16 @@ process.on('unhandledRejection', (reason, promise) => {
 
 // Middleware
 app.use(cors({
-  origin: [process.env.CLIENT_URL || 'http://localhost:3000', 'http://localhost:5173'],
-  credentials: true
+  origin: function (origin, callback) {
+    if (isOriginAllowed(origin)) {
+      callback(null, true);
+    } else {
+      callback(new Error('Not allowed by CORS'));
+    }
+  },
+  credentials: true,
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization']
 }));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
