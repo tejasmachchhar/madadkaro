@@ -4,6 +4,7 @@
   "description": "MadadKaro service marketplace application",
   "main": "index.js",
   "scripts": {
+    "start": "cd madadkaro-backend && npm start",
     "install-backend": "cd madadkaro-backend && npm install",
     "install-frontend": "cd madadkaro-frontend && npm install",
     "install-all": "npm run install-backend && npm run install-frontend",

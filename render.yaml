@@ -1,0 +1,10 @@
+services:
+  - type: web
+    name: madadkaro-backend
+    env: node
+    rootDir: madadkaro-backend
+    buildCommand: npm install
+    startCommand: npm start
+    envVars:
+      - key: NODE_ENV
+        value: production
